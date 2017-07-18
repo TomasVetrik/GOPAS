@@ -1,0 +1,34 @@
+﻿######################################################
+#
+#SCRIPT_NAME: Prepare_UserSettings.ps1
+#AUTHOR_NAME: Lukas Keicher
+#DATE: 22.6.2015
+#VERSION: 1.0
+#DESCRIPTION: Skript, ktery detekuje aktualne prihlaseneho uzivatele (v pripade profilu vytvoreneho GOPASem, profil nastavi dle nasich hodnot)
+#
+######################################################
+
+#Definice promennych
+$Temp="D:\Temp"
+
+. $Temp\Functions.ps1
+
+$profile=$env:USERNAME
+$users="Student", "StudentCZ", "StudentEN", "StudentSK", "Administrator", "Profile"
+
+Proxy-OFF
+
+if ($users -match $profile)
+{
+	Write-Host "User $profile detected..." -ForegroundColor Green
+	Write-Host "GOPAS Profile detected..." -ForegroundColor Green
+	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\UserSettings.ps1" -Verb RunAs -WindowStyle Hidden
+	#Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\Map_disc.ps1"	
+	Save-Current-Logon-User
+	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\GopasService\GDS_Form_State.ps1" -Verb RunAs -WindowStyle Hidden
+}
+else
+{
+	Write-Host "User $profile detected..." -ForegroundColor Yellow
+	Write-Host "Strange Profile detected..." -ForegroundColor Yellow
+}
