@@ -2262,7 +2262,7 @@ Function ChangeNetworkLocation
 	Write-Host "Network location DONE" -ForegroundColor Green
 }
 
-Function StandbyAndMonitorTimeout($Standby=0, $Monitor=120)
+Function StandbyAndMonitorTimeout($Standby=0, $Monitor=0)
 {
 	<#	
 	.SYNOPSIS
