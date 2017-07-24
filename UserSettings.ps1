@@ -148,7 +148,7 @@ else
 		write-host "Internet Explorer registry path already exist..." -foregroundcolor Yellow
 	}
 	write-host "Disabling changing home page and setting homepage to www.gopas.cz" -ForegroundColor Green
-	#Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'Start Page' -Value "http://www.gopas.cz"
+	Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'Start Page' -Value "http://www.gopas.sk"
 	Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'DisableFirstRunCustomize' -Value "1" -Type "Dword"	
 
 	#Rozhodovani, zda se v registru nachazi definice TaskBar pro defaultni profil, nastaveni TaskBar pro defaultni profil

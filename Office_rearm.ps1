@@ -120,5 +120,7 @@ if($Test_Office2016_Path -eq "$true")
 
 	Install_Office_KBs -Path $Office_KBs_Path	
 	write-host "Rearming Office installation..." -foregroundcolor green
+	Start-Process -filepath "C:\$ProgramFiles\Microsoft Office\Office16\ospprearm.exe" -wait
+	sleep -s 5
 	Start-Process -filepath "C:\$ProgramFiles\Microsoft Office\Office16\ospprearm.exe" -wait	
 }

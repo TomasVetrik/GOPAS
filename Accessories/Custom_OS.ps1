@@ -16,7 +16,7 @@ if(Test-Path D:\Functions.ps1)
 {
 	. D:\Functions.ps1
 	$Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
-	#Rozhodovani, zda se pocitac nachazi na siti GOPAS - pokud ano, smaze predchozi verze skriptu a stahne si nove verze
+	# Prida ovladace pokial sa nenachadza na gopasej sieti
 	if (!(($Network -like "*gopas*") -or ($Network -like "*skola*"))) 
 	{
 		Drivers-Add
@@ -90,26 +90,24 @@ AddCert
 #Aplikovani nastaveni pro prazskou pobocku (Mapovani sitoveho disku, instalace ovladacu, prejmenovani pocitace, nastaveni powerscheme)
 write-host ""
 write-host "Executing $Temp\Drivers.ps1..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Drivers.ps1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Drivers.ps1" -verb runas
 write-host ""
 write-host "Executing $Temp\Rename.ps1..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Rename.ps1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Rename.ps1" -verb runas
 Write-Host ""
 Set-WOL
 write-host ""
 write-host "Rearming Office and installing KBs..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Office_rearm.ps1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Office_rearm.ps1" -verb runas
 write-host ""
 write-host "Setting Global Settings..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GlobalSettings.ps1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GlobalSettings.ps1" -verb runas
 write-host ""
 write-host "Setting User Settings..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\UserSettings.ps1"
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\UserSettings.ps1" -verb runas
 write-host ""
 write-host "Starting GDS Postinstall phase..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run -Name "Prepare_UserSettings" -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell -windowstyle hidden $Temp\Prepare_UserSettings.ps1"
-write-host "Registering Gopas Service for remote reinstall" -foregroundcolor Yellow
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GopasService\GDS_Create_Service.ps1"
 write-host "Registering Gopas Client Service" -foregroundcolor Yellow
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GDSClient\GDSClient_Create_Service.ps1"
 
@@ -171,10 +169,6 @@ if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows
 	net user Profile /active:no 2>null | Out-Null
 }
 
-$wshell = new-object -comobject wscript.shell -erroraction stop		
-if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
-bcdedit /timeout 10 | Out-Null
-
 if (($Network -like "*gopas*") -or ($Network -like "*skola*")) 
 {	
 	TimeSynch -ServerName $ServerName	
@@ -183,4 +177,10 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\InstallFromImage_With_Destination.ps1"
 }
 
+write-host "Resetting time..." -foregroundcolor green
+ResetTime
+
+$wshell = new-object -comobject wscript.shell -erroraction stop		
+if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
+bcdedit /timeout 10 | Out-Null
 Restart

@@ -24,8 +24,7 @@ if ($users -match $profile)
 	Write-Host "GOPAS Profile detected..." -ForegroundColor Green
 	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\UserSettings.ps1" -Verb RunAs -WindowStyle Hidden
 	#Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\Map_disc.ps1"	
-	Save-Current-Logon-User
-	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\GopasService\GDS_Form_State.ps1" -Verb RunAs -WindowStyle Hidden
+	Save-Current-Logon-User	
 }
 else
 {

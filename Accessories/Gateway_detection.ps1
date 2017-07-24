@@ -78,18 +78,15 @@ Function ConnectToServer
 			if($COUNTER -eq 5)
 			{
 				write-host "Not connected $ServerName FAILED..." -ForegroundColor Red
-				read-host
-				break;
+				read-host				
 			}
 			else
 			{
 				write-host "Not connected $ServerName Retry..." -ForegroundColor Yellow
 				Start-Sleep 5
 				ConnectToServer
-			}
-			
-		}
-		
+			}			
+		}		
 	}
 }
 
