@@ -20,7 +20,6 @@ if($Motherboard -eq $null)
 $Windows_version=wmic os get name
 $Bit_version=(Get-WMIObject win32_operatingsystem).osarchitecture
 $Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
-$OldDrives = $True
 #Zjisteni bitove verze OS
 if ($Bit_version -like "*32*") 
 {
@@ -45,29 +44,25 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	{
 		if ($Test_DriverPath -eq "true") 
 		{
-			if(DirsEquals $Driverpath "Z:\Drivers\$OS\$Motherboard\")
-			{
-				$OldDrives = !$OldDrives
-			}
-			if($OldDrives)
-			{
-				write-host "Deleting old drivers from $Driverpath" -ForegroundColor Yellow
-				Remove-With-ProgressBar $DriverPath
-			}
+			#if(DirsEquals $Driverpath "Z:\Drivers\$OS\$Motherboard\")
+			#{
+			#	$OldDrives = !$OldDrives
+			#}
+			#if($OldDrives)
+			#{
+			#	write-host "Deleting old drivers from $Driverpath" -ForegroundColor Yellow
+			#	Remove-With-ProgressBar $DriverPath
+			#}
 		} 
 		else 
 		{
 			write-host "Nothing to delete from $Driverpath" -ForegroundColor Yellow
-		}
-		if($OldDrives)
-		{				
 			write-host "$OS OS detected..." -ForegroundColor Green
 			write-host "$Motherboard motherboard detected..." -ForegroundColor Green		
 			write-host "Copying new drivers from \\blavaimage\Drivers\$OS\$Motherboard\" -foregroundcolor Yellow
 			Copy-With-ProgressBar "Z:\Drivers\$OS\$Motherboard\" $Driverpath
 			write-host "Copying drivers - DONE" -ForegroundColor Green	
-			
-		}
+		}		
 	}			
 	#timeout /t 5  | out-null
 	write-host "Adding drivers to Driverstore" -foregroundcolor Yellow		
