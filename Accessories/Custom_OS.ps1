@@ -108,6 +108,8 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\UserSettings.
 write-host ""
 write-host "Starting GDS Postinstall phase..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run -Name "Prepare_UserSettings" -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell -windowstyle hidden $Temp\Prepare_UserSettings.ps1"
+write-host "Registering Gopas Service for remote reinstall" -foregroundcolor Yellow
+C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GopasService\GDS_Create_Service.ps1"
 write-host "Registering Gopas Client Service" -foregroundcolor Yellow
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GDSClient\GDSClient_Create_Service.ps1"
 
