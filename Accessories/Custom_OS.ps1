@@ -172,6 +172,13 @@ if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows
 	net user Profile /active:no 2>null | Out-Null
 }
 
+write-host "Resetting time..." -foregroundcolor green
+ResetTime
+
+$wshell = new-object -comobject wscript.shell -erroraction stop		
+if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
+bcdedit /timeout 10 | Out-Null
+
 if (($Network -like "*gopas*") -or ($Network -like "*skola*")) 
 {	
 	TimeSynch -ServerName $ServerName	
@@ -179,11 +186,4 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	write-host "Installing PostInstalls" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\InstallFromImage_With_Destination.ps1"
 }
-
-write-host "Resetting time..." -foregroundcolor green
-ResetTime
-
-$wshell = new-object -comobject wscript.shell -erroraction stop		
-if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
-bcdedit /timeout 10 | Out-Null
 Restart
