@@ -2509,6 +2509,16 @@ Function Restart-Service($serviceName)
 	}
 }
 
+Function Disable-Service($ServiceName)
+{
+	$GDS_Service = (Get-Service | where {$_.Name -eq $serviceName}).Name
+	if ($GDS_Service -ne $null)
+	{
+		Write-Host "Stopping $serviceName service..." -ForegroundColor Yellow
+		Set-Service –Name $ServiceName –StartupType "Disabled"
+	}	
+}
+
 Function Kill-Service($serviceName)
 {
 	$GDS_Service = (Get-Service | where {$_.Name -eq $serviceName}).Name
