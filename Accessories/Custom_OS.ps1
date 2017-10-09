@@ -40,6 +40,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		
 		Kill-Process "*GDS*"
 		Kill-Service "GDS_Service"
+		Kill-Service "AdobeARMservice"
 		Disable-Service "AdobeARMservice"
 		Kill-Service "GDSClient_Service"
 		Kill-Process "*HONMSW_CLIENT*"
