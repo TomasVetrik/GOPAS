@@ -68,7 +68,7 @@ Function ConnectToServer
 		if(Test-Path "Z:\")
 		{
 			write-host "Copying Prepare_Custom_OS.ps1..." -foregroundcolor green
-			Copy-Item "Z:\Prepare_Custom_OS.ps1" "D:\"
+			Copy-Item "Z:\Accessories\Prepare_Custom_OS.ps1" "D:\"
 			write-host "Executing Prepare_Custom_OS.ps1..." -foregroundcolor green
 			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Prepare_Custom_OS.ps1"	
 		}
