@@ -109,6 +109,12 @@ else
 			}
 		}
 	}	
+	
+	if($Windows_version -like "*Windows 10*") 
+	{ 
+		Kill-Service "wuauserv"
+		Disable-Service "wuauserv"
+	} 
 
 	#Nakopirovani screensaver	
 	if ($Test_ScreenSaverPath -eq "true") 
