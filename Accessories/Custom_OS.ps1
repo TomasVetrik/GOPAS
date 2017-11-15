@@ -12,10 +12,10 @@
 $Temp="D:\Temp"
 
 $Test_TempPath=Test-Path -path $Temp
+$Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
 if(Test-Path D:\Functions.ps1)
 {
 	. D:\Functions.ps1
-	$Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
 	# Prida ovladace pokial sa nenachadza na gopasej sieti
 	if (!(($Network -like "*gopas*") -or ($Network -like "*skola*"))) 
 	{
@@ -23,7 +23,6 @@ if(Test-Path D:\Functions.ps1)
 	}
 }
 
-$Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
 #Rozhodovani, zda se pocitac nachazi na siti GOPAS - pokud ano, smaze predchozi verze skriptu a stahne si nove verze
 if (($Network -like "*gopas*") -or ($Network -like "*skola*")) 
 {
@@ -40,8 +39,6 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		
 		Kill-Process "*GDS*"
 		Kill-Service "GDS_Service"
-		Kill-Service "AdobeARMservice"
-		Disable-Service "AdobeARMservice"
 		Kill-Service "GDSClient_Service"
 		Kill-Process "*HONMSW_CLIENT*"
 		Kill-Process "*GDSAgent*"
@@ -86,7 +83,6 @@ Proxy-OFF
 
 #Import certifikatu
 AddCert
-
 
 #Aplikovani nastaveni pro prazskou pobocku (Mapovani sitoveho disku, instalace ovladacu, prejmenovani pocitace, nastaveni powerscheme)
 write-host ""
@@ -139,29 +135,17 @@ Set-Autologon 0
 $AutoLogonCount="HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\"
 $AutoLogonCount_Value=(Get-ItemProperty $AutologonCount).AutoLogonCount
 If ($AutoLogonCount_Value -eq $null)
-    {
-        write-host "AutologonCount registry value not exist..." -foregroundcolor Yellow
-    }
-else
-    {
-        write-host "AutologonCount registry value exist..." -foregroundcolor green
-		write-host "Removing AutologonCount registry value..." -foregroundcolor green
-        Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount
-    }
-
-#Nastaveni GHOST sluzby na Automatic a spusteni sluzby
-write-host "Detecting GHOST service..." -foregroundcolor green
-$GHOST=(Get-Service | where {$_.name -eq "NGCLIENT"}).Name
-if ($GHOST -like "NGCLIENT") 
 {
-	write-host "GHOST service detected..." -foregroundcolor green
-	write-host "Starting GHOST service..." -foregroundcolor green
-	Set-Service NGCLIENT -startuptype "Automatic" | Out-Null
-} 
-else 
-{
-	write-host "GHOST service not detected..." -foregroundcolor Yellow
+	write-host "AutologonCount registry value not exist..." -foregroundcolor Yellow
 }
+else
+{
+	write-host "AutologonCount registry value exist..." -foregroundcolor green
+	write-host "Removing AutologonCount registry value..." -foregroundcolor green
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount
+}
+
+Automatic-Service "NGCLIENT"
 
 Copy-Item C:\Windows\Temp\Exchange.bat C:\Windows\System32\Exchange.bat -Force
 Copy-Item C:\Windows\Temp\Exchange.bat C:\Windows\System32\Outlook.bat -Force
@@ -186,4 +170,8 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	write-host "Installing PostInstalls" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\InstallFromImage_With_Destination.ps1"
 }
+Kill-Process "armsvc*"
+Kill-Process "AdobeARM*"
+Kill-Service "AdobeARMservice"
+Disable-Service "AdobeARMservice"
 Restart

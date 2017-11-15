@@ -23,7 +23,7 @@ else
 
 #Kopirovani aktualni verze skriptu Custom_OS.ps1 ze site na lokalni disk
 write-host "Copying Custom_OS.ps1..." -foregroundcolor green
-Copy-Item "Z:\Custom_OS.ps1" "D:\Custom_OS.ps1"
+Copy-Item "Z:\Accessories\Custom_OS.ps1" "D:\Custom_OS.ps1"
 
 #Spusteni skriptu Custom_OS.ps1
 write-host "Executing Custom_OS.ps1..." -foregroundcolor green

@@ -18,8 +18,8 @@ switch -wildcard ($gateway)
 	"10.2.0.1" {$ServerName = "prahaservice"}
 	"10.101.0.1" {$ServerName = ""}
 	"10.102.0.1" {$ServerName = ""} 
-	"10.201.0.1" {$ServerName = "blavaservice"}
-	"10.202.0.1" {$ServerName = "blavaservice"}   
+	"10.201.0.1" {$ServerName = ""}
+	"10.202.0.1" {$ServerName = ""}   
 	default 
 	{
 		$ServerName = ""

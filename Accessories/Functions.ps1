@@ -2508,6 +2508,15 @@ Function Restart-Service($serviceName)
 		Start-Service -Name $GDS_Service
 	}
 }
+Function Automatic-Service($ServiceName)
+{
+	$GDS_Service = (Get-Service | where {$_.name -eq $ServiceName}).Name
+	if ($GDS_Service -ne $null) 
+	{
+		write-host "Starting $ServiceName service..." -foregroundcolor Yellow
+		Set-Service $ServiceName -startuptype "Automatic"
+	}
+} 
 
 Function Disable-Service($ServiceName)
 {
@@ -3318,14 +3327,14 @@ Function Restart($Time=15)
 {
 	$wshell = new-object -comobject wscript.shell -erroraction stop
 	$wshell.popup("Restart for Post-install scripts....",$Time,"Restart")
-	shutdown.exe -r -t 0
+	Restart-Computer
 }
 
 Function Shutdown($Time=15)
 {
 	$wshell = new-object -comobject wscript.shell -erroraction stop
 	$wshell.popup("Shutdown Computer....",$Time,"Shutdown")
-	shutdown.exe -s -t 0
+	Stop-Computer
 }
 
 Function RepairGhostPubCert
