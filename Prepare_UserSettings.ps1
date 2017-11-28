@@ -14,7 +14,7 @@ $Temp="D:\Temp"
 . $Temp\Functions.ps1
 
 $profile=$env:USERNAME
-$users="Student", "StudentCZ", "StudentEN", "StudentSK", "Administrator", "Profile"
+$users="Student", "StudentCZ", "StudentEN", "StudentSK", "Administrator", "Profile", "ECDL_CZ", "ECDL_SK", "ECDL_EN"
 
 Proxy-OFF
 
