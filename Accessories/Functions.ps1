@@ -3129,7 +3129,16 @@ Function Set-AutologonAutomatic()
 		"*StudentEN" {Set-Autologon 1 $User_name}
 		"*StudentSK" {Set-Autologon 1 $User_name}
 		"*Student" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
-		"*Administrator" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
+		"*Administrator" {
+			if(Get-OSAbrivation -eq "w2k16")
+			{
+				Set-Autologon 1 $User_name 'Pa55w.rd'
+			}
+			else
+			{
+				Set-Autologon 1 $User_name 'Pa$$w0rd'
+			}
+		}
 		default {Set-Autologon 1}
 	}
 }
