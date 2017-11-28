@@ -156,6 +156,12 @@ if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows
 	net user Profile /active:no 2>null | Out-Null
 }
 
+if($Windows_version -like "*Windows 10*"))
+{
+	Kill-Service "wuauserv"
+	Disable-Service "wuauserv"
+}
+
 write-host "Resetting time..." -foregroundcolor green
 ResetTime
 
