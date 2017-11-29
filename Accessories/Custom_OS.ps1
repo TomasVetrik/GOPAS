@@ -156,10 +156,21 @@ if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows
 	net user Profile /active:no 2>null | Out-Null
 }
 
-if($Windows_version -like "*Windows 10*"))
-{
-	Kill-Service "wuauserv"
-	Disable-Service "wuauserv"
+switch -wildcard ($ServerName) 
+{ 
+    "PrahaImage" 
+	{
+		write-host "Run Custom Scripts for Praha" -foregroundcolor Yellow
+	}
+ 	"BrnoImage" 
+	{
+		write-host "Run Custom Scripts for Brno" -foregroundcolor Yellow
+	}
+    "BlavaImage" 
+	{
+		write-host "Run Custom Scripts for Bratislava" -foregroundcolor Yellow
+	}	
+    default {}
 }
 
 write-host "Resetting time..." -foregroundcolor green
