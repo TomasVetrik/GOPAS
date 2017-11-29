@@ -156,22 +156,40 @@ if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows
 	net user Profile /active:no 2>null | Out-Null
 }
 
+$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
+switch -wildcard ($gateway) 
+{ 
+	"10.1.0.1" {$ServerName = "PrahaImage"}
+	"10.2.0.1" {$ServerName = "PrahaImage"}
+	"10.101.0.1" {$ServerName = "BrnoImage"}
+	"10.102.0.1" {$ServerName = "BrnoImage"} 
+	"10.201.0.1" {$ServerName = "BlavaImage"}
+	"10.202.0.1" {$ServerName = "BlavaImage"}   
+	default {$ServerName = ""}
+}
+Write-Host ""
+Write-host "Running Custom Scripts for Branch $ServerName" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
 switch -wildcard ($ServerName) 
 { 
     "PrahaImage" 
 	{
 		write-host "Run Custom Scripts for Praha" -foregroundcolor Yellow
+		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Praha.ps1"
 	}
  	"BrnoImage" 
 	{
 		write-host "Run Custom Scripts for Brno" -foregroundcolor Yellow
+		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Brno.ps1"
 	}
     "BlavaImage" 
 	{
 		write-host "Run Custom Scripts for Bratislava" -foregroundcolor Yellow
+		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Blava.ps1"
 	}	
     default {}
 }
+
+write-host ""
 
 write-host "Resetting time..." -foregroundcolor green
 ResetTime
