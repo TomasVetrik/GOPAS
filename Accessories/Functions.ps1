@@ -1612,7 +1612,7 @@ Function AddDrivers($Driverpath)
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"	
-			Start "D:\Temp\Controller.exe"
+			Start "D:\Controller.exe"
 			$Objects = PnPutil.exe -i -a $file.fullname
 			foreach($Object in $Objects)
 			{
