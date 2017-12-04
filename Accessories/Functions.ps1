@@ -1595,14 +1595,7 @@ Function AddDrivers($Driverpath)
     $InfFiles = Get-ChildItem $Driverpath -Recurse -Filter *.inf
     $MaxCount = $InfFiles.Count
     $ProgressCount = 0
-    $Activity = "Adding Drivers"
-	
-	Kill-Process "rundll32"
-	Kill-Process "rundll32"
-	Kill-Process "rundll32"
-	Kill-Process "rundll32"
-	Kill-Process "rundll32"
-	Kill-Process "rundll32"
+    $Activity = "Adding Drivers"	
     foreach($file in $InfFiles)
     {
 		Write-Progress -Activity $Activity -Status $file.fullname -PercentComplete ($ProgressCount / $MaxCount*100)
@@ -1615,52 +1608,47 @@ Function AddDrivers($Driverpath)
 			#write-host "Skip Unsigned driver: $file" -ForeGround Yellow
 		}
 		else
-		{
-			if(Get-Signature $file.fullname)
-			{					
-				Start "D:\Temp\Controller.exe"
-				$Objects = PnPutil.exe -i -a $file.fullname
-				foreach($Object in $Objects)
+		{	
+			Kill-Process "rundll32"
+			Kill-Process "rundll32"
+			Kill-Process "rundll32"	
+			Start "D:\Temp\Controller.exe"
+			$Objects = PnPutil.exe -i -a $file.fullname
+			foreach($Object in $Objects)
+			{
+				if($Object -like "Processing inf :*" -or $Object -like "ZpracovßnÝ informacÝ:*")
 				{
-					if($Object -like "Processing inf :*" -or $Object -like "ZpracovßnÝ informacÝ:*")
-					{
-						$Split = $Object.split(':')                
-						$ProcInf = $Split[1].Replace(' ','')  
-					}
-					elseif($Object -like "Published name : *" -or $Object -like "PublikovanÚ jmÚno:*")
-					{
-						$Split = $Object.split(':')                
-						$PubInf = $Split[1].Replace(' ','') 
-					}					
-					elseif($Object -like "*Failed*" -or $Object -like "*failed*" -or $Object -like "*nezda°ilo*" -or $Object -like "*nezda°ila:*")
-					{
-						$Split = $Object.split(':')                
-						$except = $Split[1]
-					}
-					elseif($Object -like "Successfully *" -or $Object -like "*successfully.*" -or $Object -like "*nainstalovßn.")
-					{
-						$except = "DONE"
-					}
+					$Split = $Object.split(':')                
+					$ProcInf = $Split[1].Replace(' ','')  
 				}
-				Kill-Process "Controller"
-				if($except -eq "DONE")
+				elseif($Object -like "Published name : *" -or $Object -like "PublikovanÚ jmÚno:*")
 				{
-					Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Green    
-					Add-Content $Temp\Logs_Drivers_OK.txt "$file $ProcInf $PubInf : $except" >> $null
-					#WriteToLogs "OK: $file $ProcInf $PubInf : $except"
+					$Split = $Object.split(':')                
+					$PubInf = $Split[1].Replace(' ','') 
+				}					
+				elseif($Object -like "*Failed*" -or $Object -like "*failed*" -or $Object -like "*nezda°ilo*" -or $Object -like "*nezda°ila:*")
+				{
+					$Split = $Object.split(':')                
+					$except = $Split[1]
 				}
-				else
+				elseif($Object -like "Successfully *" -or $Object -like "*successfully.*" -or $Object -like "*nainstalovßn.")
 				{
-					Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Yellow 
-					Add-Content $Temp\Logs_Drivers_Fail.txt "$file $ProcInf $PubInf : $except" >> $null
-					#WriteToLogs "FAIL: $file $ProcInf $PubInf : $except"
-				}                
+					$except = "DONE"
+				}
 			}
-            else
-            {
-				$FullName = $file.fullname
-			    #WriteToLogs "FAIL: Nepodpisany ovladac: $FullName"
-            }            
+			Kill-Process "Controller"
+			if($except -eq "DONE")
+			{
+				Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Green    
+				Add-Content $Temp\Logs_Drivers_OK.txt "$file $ProcInf $PubInf : $except" >> $null
+				#WriteToLogs "OK: $file $ProcInf $PubInf : $except"
+			}
+			else
+			{
+				Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Yellow 
+				Add-Content $Temp\Logs_Drivers_Fail.txt "$file $ProcInf $PubInf : $except" >> $null
+				#WriteToLogs "FAIL: $file $ProcInf $PubInf : $except"
+			}                			          
 		}
     }
 }
