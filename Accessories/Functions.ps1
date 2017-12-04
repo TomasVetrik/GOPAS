@@ -1596,6 +1596,13 @@ Function AddDrivers($Driverpath)
     $MaxCount = $InfFiles.Count
     $ProgressCount = 0
     $Activity = "Adding Drivers"
+	
+	Kill-Process "rundll32"
+	Kill-Process "rundll32"
+	Kill-Process "rundll32"
+	Kill-Process "rundll32"
+	Kill-Process "rundll32"
+	Kill-Process "rundll32"
     foreach($file in $InfFiles)
     {
 		Write-Progress -Activity $Activity -Status $file.fullname -PercentComplete ($ProgressCount / $MaxCount*100)
@@ -1611,6 +1618,7 @@ Function AddDrivers($Driverpath)
 		{
 			if(Get-Signature $file.fullname)
 			{					
+				Start "D:\Temp\Controller.exe"
 				$Objects = PnPutil.exe -i -a $file.fullname
 				foreach($Object in $Objects)
 				{
@@ -1634,6 +1642,7 @@ Function AddDrivers($Driverpath)
 						$except = "DONE"
 					}
 				}
+				Kill-Process "Controller"
 				if($except -eq "DONE")
 				{
 					Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Green    

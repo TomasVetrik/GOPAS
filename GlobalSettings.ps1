@@ -112,6 +112,7 @@ else
 	
 	if($Windows_version -like "*Windows 10*") 
 	{ 		
+		dism /online /enable-feature /featurename:NetFx3 /Source:"D:\sxs"
 		Kill-Service "wuauserv"
 		Disable-Service "wuauserv"
 	}
