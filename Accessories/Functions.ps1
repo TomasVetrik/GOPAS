@@ -3333,14 +3333,14 @@ Function Restart($Time=15)
 {
 	$wshell = new-object -comobject wscript.shell -erroraction stop
 	$wshell.popup("Restart for Post-install scripts....",$Time,"Restart")
-	Restart-Computer
+	Restart-Computer -Force
 }
 
 Function Shutdown($Time=15)
 {
 	$wshell = new-object -comobject wscript.shell -erroraction stop
 	$wshell.popup("Shutdown Computer....",$Time,"Shutdown")
-	Stop-Computer
+	Stop-Computer -Force
 }
 
 Function RepairGhostPubCert
