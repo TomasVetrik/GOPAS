@@ -147,8 +147,8 @@ else
 
 Automatic-Service "NGCLIENT"
 
-Copy-Item C:\Windows\Temp\Exchange.bat C:\Windows\System32\Exchange.bat -Force
-Copy-Item C:\Windows\Temp\Exchange.bat C:\Windows\System32\Outlook.bat -Force
+Copy-Item D:\Temp\Exchange.bat C:\Windows\System32\Exchange.bat -Force
+Copy-Item D:\Temp\Exchange.bat C:\Windows\System32\Outlook.bat -Force
 
 $Windows_version=wmic os get name
 if (($Windows_version -like "*Windows 8*") -or ($Windows_version -like "*Windows 10*"))
