@@ -42,6 +42,10 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		Kill-Service "GDSClient_Service"
 		Kill-Process "*HONMSW_CLIENT*"
 		Kill-Process "*GDSAgent*"
+		Kill-Process "armsvc*"
+		Kill-Process "AdobeARM*"
+		Kill-Service "AdobeARMservice"
+		Disable-Service "AdobeARMservice"
 		
 		Start-Sleep 5
 		
