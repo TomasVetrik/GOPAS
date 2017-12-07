@@ -147,8 +147,6 @@ else
 	{
 		write-host "Internet Explorer registry path already exist..." -foregroundcolor Yellow
 	}
-	write-host "Disabling changing home page and setting homepage to www.gopas.cz" -ForegroundColor Green
-	Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'Start Page' -Value "http://www.gopas.sk"
 	Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'DisableFirstRunCustomize' -Value "1" -Type "Dword"	
 
 	#Rozhodovani, zda se v registru nachazi definice TaskBar pro defaultni profil, nastaveni TaskBar pro defaultni profil
@@ -248,7 +246,40 @@ else
 	
 	#Nastaveni screensaveru - musi byt zde kvuli Multiprofile instalaci (pod uctem StudentEN jinak Screensaver nefunguje)
 	write-host "Setting SK version of screensaver..." -foregroundcolor green
-	regedit /s "C:\Program Files\Screensaver\screensaver.reg"	
+	regedit /s "C:\Program Files\Screensaver\screensaver.reg"		
+	
+	$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
+	switch -wildcard ($gateway) 
+	{ 
+		"10.1.0.1" {$ServerName = "PrahaImage"}
+		"10.2.0.1" {$ServerName = "PrahaImage"}
+		"10.101.0.1" {$ServerName = "BrnoImage"}
+		"10.102.0.1" {$ServerName = "BrnoImage"} 
+		"10.201.0.1" {$ServerName = "BlavaImage"}
+		"10.202.0.1" {$ServerName = "BlavaImage"}   
+		default {$ServerName = ""}
+	}
+	Write-Host ""
+	Write-host "Running Custom Scripts for Branch $ServerName" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
+	switch -wildcard ($ServerName) 
+	{ 
+		"PrahaImage" 
+		{
+			write-host "Run Custom Scripts for Praha" -foregroundcolor Yellow
+			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Praha.ps1"
+		}
+		"BrnoImage" 
+		{
+			write-host "Run Custom Scripts for Brno" -foregroundcolor Yellow
+			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Brno.ps1"
+		}
+		"BlavaImage" 
+		{
+			write-host "Run Custom Scripts for Bratislava" -foregroundcolor Yellow
+			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Blava.ps1"
+		}	
+		default {}
+	}
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
 	if(Test-Path $Settings_applied)
