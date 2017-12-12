@@ -115,11 +115,6 @@ write-host "Registering Gopas Client Service" -foregroundcolor Yellow
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GDSClient\GDSClient_Create_Service.ps1"
 
 Write-Host ""
-# Nastavi automaticke spustanie Aplikacii na kopirovanie
-Write-Host "Setting ANK" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-SetAnK
-
-Write-Host ""
 #Odpojeni sitovych disku, ktere v ramci procesu pouzivany, odpojeni registru defaultniho profilu, vypnuti automatickeho prihlasovani
 write-host "Cleaning footprints" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 write-host "Unloading Default profile registry hive..." -foregroundcolor green
