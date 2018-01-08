@@ -3418,6 +3418,34 @@ Function GetComputerNameFromServerByMac($Mac)
 	return $ComputerName
 }
 
+Function GetComputerNameFromServerByMacXML($Mac)
+{
+	$ComputerName = ""
+	if($Mac -ne "")
+	{
+		DetectMapNetworkShares
+		$MachineGroupPath = "W:\Deployment\GDS Server\Machine Groups"
+		if(Test-Path $MachineGroupPath)
+		{
+			$Files = Get-ChildItem $MachineGroupPath -recurse -filter "*.my"			
+			foreach($File in $Files)
+			{	
+				[xml]$XMLConfigFile = Get-Content -Path $File.FullName
+				foreach($MacAddres in $XMLConfigFile.ComputerDetailsData.macAddresses.string)
+				{    
+					if($Mac -eq $MacAddres)
+					{
+						$ComputerName = $File.FullName.Replace(".my",".cfg")
+						return $ComputerName						
+					}					
+				}
+			}
+		}
+	}
+	return $ComputerName
+}
+
+
 Function AddCert
 {
 	$CertFiles=get-childitem "$Temp\*.cer"

@@ -1,5 +1,63 @@
 ﻿. D:\Temp\Functions.ps1
 
+Function InstallByName($Installation = "")
+{
+	if($Installation.Length -gt 0)
+	{
+		if($Installation.Contains("*"))
+		{
+			$Installation = $Installation.Replace("*","")
+			$Installation = $Installation.Substring(0, $Installation.Length -1)
+		}
+		#Zisti ci existuje priecinok s instalaciou
+		if(Test-Path $TempDrive\$Installation)
+		{	
+			Write-Host "Detected installation $Installation" -ForegroundColor Green
+			if(Test-Path $TempDrive\$Installation\CopyDestination.txt)
+			{						
+				#****************************
+				#Dostane cestu, kde ma subory nakopirovat
+				$Destination = Get-Content $TempDrive\$Installation\CopyDestination.txt					
+				if(($Destination.length -le 3) -or ($Destination[$Destination.length-1] -eq '\'))
+				{
+					$Destination = $Destination.Substring(0,$Destination.length-1)
+				}
+				if(Test-Path $Destination\$Installation)
+				{
+					Write-Host "Deleting old files" -ForegroundColor Yellow
+					Remove-Item $Destination -Recurse -Force >> $null
+				}
+				Write-Host "Copy files to $Destination" -ForegroundColor Yellow
+				Copy-Item -Path $TempDrive\$Installation\ -Destination $Destination\ -Recurse -Force
+				#Spusti batak ktory to nainsatluje	                    			
+				$msbuild = $Destination+"\Start.bat"
+			}
+			else
+			{
+				if(Test-Path D:\Temp\PostInstallers\$Installation)
+				{
+					Write-Host "Deleting old files" -ForegroundColor Yellow
+					Remove-Item D:\Temp\PostInstallers\$Installation -Force -Recurse >> $null
+				}
+				#Nakopiruje aktualny priecinok s instalaciou
+				Write-Host "Copy files to Temp" -ForegroundColor Yellow
+				Copy-Item -Path $TempDrive\$Installation -Destination D:\Temp\PostInstallers\$Installation -Recurse -Force
+			
+				#Spusti batak ktory to nainsatluje				
+				$msbuild = "D:\Temp\PostInstallers\$Installation\Start.bat"
+			}
+			Write-Host "Run the installation $Installation" -ForegroundColor Yellow
+			Start-Process -FilePath $msbuild -Wait -Verb RunAs
+		}
+		else
+		{
+			#Ak sa nepodarilo najst dany priecinok s instalaciou
+			$A = Get-Date							
+			Write-Host "`n$A - $env:ComputerName - Neznama instalacia $Installation" -ForegroundColor Red
+		}
+	}
+}
+
 $MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
 
 $ComputerFileName = GetComputerNameFromServerByMac -Mac $MacAddress
@@ -39,65 +97,23 @@ if(Test-Path $ComputerFileName)
 				if($InstallationsSplitter[1] -like '*,*')
 				{
 					$Installations = $InstallationsSplitter[1].Split(',') | Where { $_.length -gt 0 } 
-					foreach($Installation in $Installations)
+					foreach($InstallationName in $Installations)
 					{					
-						if($Installation.Length -gt 0)
-						{
-							if($Installation.Contains("*"))
-							{
-								$Installation = $Installation.Replace("*","")
-								$Installation = $Installation.Substring(0, $Installation.Length -1)
-							}
-							#Zisti ci existuje priecinok s instalaciou
-							if(Test-Path $TempDrive\$Installation)
-							{	
-								Write-Host "Detected installation $Installation" -ForegroundColor Green
-								if(Test-Path $TempDrive\$Installation\CopyDestination.txt)
-								{						
-									#****************************
-									#Dostane cestu, kde ma subory nakopirovat
-									$Destination = Get-Content $TempDrive\$Installation\CopyDestination.txt					
-									if(($Destination.length -le 3) -or ($Destination[$Destination.length-1] -eq '\'))
-									{
-										$Destination = $Destination.Substring(0,$Destination.length-1)
-									}
-									if(Test-Path $Destination\$Installation)
-									{
-										Write-Host "Deleting old files" -ForegroundColor Yellow
-										Remove-Item $Destination -Recurse -Force >> $null
-									}
-									Write-Host "Copy files to $Destination" -ForegroundColor Yellow
-									Copy-Item -Path $TempDrive\$Installation\ -Destination $Destination\ -Recurse -Force
-									#Spusti batak ktory to nainsatluje	                    			
-									$msbuild = $Destination+"\Start.bat"
-								}
-								else
-								{
-									if(Test-Path D:\Temp\PostInstallers\$Installation)
-									{
-										Write-Host "Deleting old files" -ForegroundColor Yellow
-										Remove-Item D:\Temp\PostInstallers\$Installation -Force -Recurse >> $null
-									}
-									#Nakopiruje aktualny priecinok s instalaciou
-									Write-Host "Copy files to Temp" -ForegroundColor Yellow
-									Copy-Item -Path $TempDrive\$Installation -Destination D:\Temp\PostInstallers\$Installation -Recurse -Force
-								
-									#Spusti batak ktory to nainsatluje				
-									$msbuild = "D:\Temp\PostInstallers\$Installation\Start.bat"
-								}
-								Write-Host "Run the installation $Installation" -ForegroundColor Yellow
-								Start-Process -FilePath $msbuild -Wait -Verb RunAs
-							}
-							else
-							{
-								#Ak sa nepodarilo najst dany priecinok s instalaciou
-								$A = Get-Date							
-								Write-Host "`n$A - $env:ComputerName - Neznama instalacia $Installation" -ForegroundColor Red
-							}
-						}
+						InstallByName $InstallationName
 					}
 				}				
 			}
 		}
+	}
+}
+
+$ComputerFileName =  GetComputerNameFromServerByMacXML -Mac $MacAddress
+
+if(Test-Path $ComputerFileName)
+{
+	[xml]$XMLConfigFile = Get-Content $ComputerFileName
+	foreach($InstallationName in $XMLConfigFile.ComputerConfigData.PostInstalls.string)
+	{    
+		InstallByName $InstallationName
 	}
 }
