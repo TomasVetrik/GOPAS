@@ -50,7 +50,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		{
 			write-host "$OS OS detected..." -ForegroundColor Green
 			write-host "$Motherboard motherboard detected..." -ForegroundColor Green		
-			write-host "Copying new drivers from \\blavaimage\Drivers\$OS\$Motherboard\" -foregroundcolor Yellow
+			write-host "Copying new drivers from \\$ServerName\Drivers\$OS\$Motherboard\" -foregroundcolor Yellow
 			Copy-With-ProgressBar "Z:\Drivers\$OS\$Motherboard\" $Driverpath
 			write-host "Copying drivers - DONE" -ForegroundColor Green	
 		}		
