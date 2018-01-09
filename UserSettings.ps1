@@ -248,7 +248,7 @@ else
 	write-host "Setting screensaver..." -foregroundcolor green
 	regedit /s "C:\Program Files\Screensaver\screensaver.reg"			
 	
-	if($ServerName -ne "")
+	if($ServerName -eq "")
 	{
 		Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
 		$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
