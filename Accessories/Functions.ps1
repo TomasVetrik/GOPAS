@@ -54,6 +54,7 @@ $Global:HWUserName = $HW.UserName
 $Global:UserName = $env:UserName
 $Global:WorkGroup = $HW.Workgroup
 
+
 #Detekcia procesoru
 $Processor = Get-WmiObject -class Win32_processor
 $Global:ProcName = $Processor.Name
