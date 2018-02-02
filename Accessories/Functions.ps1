@@ -25,7 +25,6 @@ if ($BufferSize.Width -lt $BufferWidth) {$BufferSize.Width = $BufferWidth; $bUpd
 if ($BufferSize.Height -lt $BufferHeight) {$BufferSize.Height = $BufferHeight; $bUpdateSize = $true}
 if ($bUpdateSize -eq $true) {$RawUI.BufferSize = $BufferSize}
 
-
 Remove-Variable bUpdateSize
 
 ##**Global Premenna
