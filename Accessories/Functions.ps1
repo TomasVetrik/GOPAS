@@ -1663,14 +1663,6 @@ Function AddDrivers($Driverpath)
 			}                			          
 		}
     }
-    $SetupFiles = Get-ChildItem $Driverpath -Recurse -Filter Setup.exe
-    $MaxCount = $SetupFiles.Count
-    $ProgressCount = 0
-    $Activity = "Starting Setup"
-	foreach($file in $SetupFiles)
-	{
-		Start-Process $File.FullName -ArgumentList "/s" -wait
-	}
 }
 
 Function Get-MotherboardID
