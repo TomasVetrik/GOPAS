@@ -1592,6 +1592,17 @@ Function AddDrivers($Driverpath)
 	.EXAMPLE
 	AddDrivers "D:\Drivers"
 	#>
+	
+	$SetupFiles = Get-ChildItem $Driverpath -Recurse -Filter setup.bat
+	$MaxCount = $SetupFiles.Count
+	$ProgressCount = 0
+	$Activity = "Starting setup which will add drivers"
+	foreach($file in $SetupFiles)
+	{	
+			write-host "Starting $($File.FullName)" -foregroundcolor green
+			Start-Process $File.FullName -wait
+	}
+	
     $InfFiles = Get-ChildItem $Driverpath -Recurse -Filter *.inf
     $MaxCount = $InfFiles.Count
     $ProgressCount = 0
