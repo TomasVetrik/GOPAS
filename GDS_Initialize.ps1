@@ -35,7 +35,5 @@ bcdedit /bootsequence $guid
 #write-host "Setting dualboot timeout to 3 seconds..." -foreground green
 bcdedit /timeout 3
 
-Set-ItemProperty -Path "HKLM:\SYSTEM\GOPAS\GDS" -Name "GDS_Installation_State" -Value 0
-Set-ItemProperty -Path "HKLM:\SYSTEM\GOPAS\GDS" -Name "GDS_Form_State" -Value 0
 
 shutdown -r -t 10 -f -c "Restaring to WinPE"
