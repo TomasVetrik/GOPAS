@@ -14,55 +14,53 @@ Function GeneralRebuild($vhd)
 	write-host -foreground green "Disk $disk_letter detected..."
 	if ($disk_letter -eq "D")
 			{
+				bcdedit /export d:\bcd_backup
 				Write-host "Chosen Windows version $vhd..." -foreground green
 				#Vytvoreni kontrolni souboru s verzi Windows, na kterou bude PC preinstalovano
 				echo "$vhd" > "D:\Desired_VHD.txt"
+				if($DelDriveECheckBox.Checked -eq $true){"Yes" | out-file "D:\Desired_VHD.txt" -append}else{"No" | out-file "D:\Desired_VHD.txt" -append}
+				if($DelDiffCheckBox.Checked -eq $true ){"Yes" | out-file "D:\Desired_VHD.txt" -append}else{"No" | out-file "D:\Desired_VHD.txt" -append}
 				write-host "Creating Desired_VHD..." -foreground green
 				
-				Write-Host "Searching in bcd for local version of WinPE..." -foreground green
+				#smazani ramdisk
+				bcdedit /delete '{ramdiskoptions}' /f
+
+				#vytvoreni nove ramdisk
+				bcdedit /create '{ramdiskoptions}' /d "Ramdisk options"
+
+				bcdedit /set '{ramdiskoptions}' ramdisksdidevice partition=d: 
+
+				bcdedit /set '{ramdiskoptions}' ramdisksdipath \Temp\boot.sdi
+				bcdedit /set '{ramdiskoptions}' description "Global Rebuild" 
+
+				#vytvoreni zaznamu pro winpe
+				bcdedit /create /d "Global Rebuild" /application osloader > D:\Temp\bcdedit.txt
+
+				#vyfiltrovani guid
+				$guid=Get-Content D:\Temp\bcdedit.txt
+				$guid=$guid -replace ".*{", "" -replace "}.*", ""
+				$guid="{"+"$guid"+"}"
+
+				#vytvoreni zaznamu pro Global Rebuild.wim
+				cmd /c "Bcdedit /set $guid device ramdisk=[D:]\Global_Rebuild_Local.wim,{ramdiskoptions}"
+				cmd /c "Bcdedit /set $guid osdevice ramdisk=[D:]\Global_Rebuild_Local.wim,{ramdiskoptions}"
+
+				Bcdedit /set $guid path \windows\system32\boot\winload.exe
+				Bcdedit /set $guid systemroot \windows
+				Bcdedit /set $guid winpe yes
+				Bcdedit /set $guid detecthal yes
+				bcdedit /displayorder $guid /remove
+
+				#write-host "Setting default record in bcd to WinPE with ID $guid..." -foreground green
+				bcdedit /bootsequence $guid
+
+				#write-host "Setting dualboot timeout to 3 seconds..." -foreground green
+				bcdedit /timeout 3			
 				
-				$Objects = bcdedit /enum
-				foreach($Object in $Objects)
-					{
-						if (($Object -like "identifier*") -or ($Object -like "identifikátor*") )
-							{
-								$ID = $Object
-							}
-					}
-					if($ID -like "identifier*")
-					{
-						$ID = $ID.replace(' ','')
-						$ID = $ID.replace("identifier",'')
-					}	
-                	if($ID -like "identifikátor*")
-					{
-						$ID = $ID.replace(' ','')
-						$ID = $ID.replace("identifikátor",'')
-					}
-				write-host "Setting default record in bcd to WinPE with ID $ID..." -foreground green
-				bcdedit /default $ID
-				write-host "Setting dualboot timeout to 3 seconds..." -foreground green
-				bcdedit /timeout 3
 				shutdown -r -t 10 -f -c "Restaring to WinPE"
 			}
 		else
 			{
-				if(Test-Path -path "w:\*")
-				{
-					#Kopirovani Password.txt pro pozdejsi uziti
-					Copy-Item "w:\Deployment\Accessories\Password.txt" "C:\Password.txt" -force
-					#Pokud se nejedna o lokalni rebuild, tak jeste promaze velkej _LOG
-					$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
-					$Database=(import-csv -path "w:\deployment\Database.csv" | where {$_.mac1 -eq $MacAddress -or $_.mac2 -eq $MacAddress})
-					$Ucebna=($Database).Ucebna
-					$Student=($Database).Office
-					$LogName = $Student + "_LOG.txt"
-					Clear-Content -path "w:\Deployment\Classroom\$Ucebna\$LogName"
-				}
-				else
-				{
-					Copy-Item "x:\Windows\System32\Password.txt" "C:\Password.txt" -force
-				}
 				bcdedit /import "C:\bcd_backup"
 				write-host "Restoring bcd from backup..." -foreground green
 				Write-host "Chosen Windows version"$vhd"..." -foreground green
@@ -70,31 +68,45 @@ Function GeneralRebuild($vhd)
 				$path_diff = "C:\$vhd"+"_diff.vhd"
 				$path_diff_bcd = "[C:]\$vhd"+"_diff.vhd"
 				write-host "Base vhd for selected Windows version detected in $path_base..." -foreground green
-				#Odstraneni stavajiciho differencniho disku
-				if(Test-Path -path "C:\*_diff.vhd")
-					{
-						Remove-Item "C:\*_diff.vhd"
-						Write-host "Deleting old differencing disks..." -foregroundcolor green
-						Write-Host ""
-					}
-				else
-					{
-						Write-Host "Old differencing disks not detected..." -foregroundcolor magenta
-						Write-Host ""
-					}
-				#Vytvoreni noveho differencniho disku
-				Write-host "Creating new differencing disk for $vhd..." -foregroundcolor green
-				Write-Host ""
-$diskpartskript = @"
-			create vdisk file=$path_diff parent $path_base
-			sel disk 0
-			sel par 2
-			format fs = ntfs quick override
-			exit
+				
+				$Desired_VHD = get-content C:\Desired_VHD.txt
+				if($Desired_VHD[1] -eq "Yes")
+				{
+				$diskpartskript = @"
+					sel disk 0
+					sel par 2
+					format fs = ntfs quick override
+					exit
 "@
-		$diskpartskript | diskpart
-				Write-host "Differencing disk for"$vhd"succesfully created..." -foregroundcolor green
-				Write-Host ""
+					$diskpartskript | diskpart
+					Write-Host "Formatting Drive E:\..." -foreground green
+					Write-Host ""
+				}
+				else
+				{
+					Write-Host "Leaving Drive E:\ alone..." -foreground green
+					Write-Host ""
+				}
+				if($Desired_VHD[2] -eq "Yes")
+				{
+					#Odstraneni stavajiciho differencniho disku
+					if(Test-Path -path $path_diff)
+						{
+							Remove-Item $path_diff -force
+							Write-host "Deleting old differencing disk..." -foregroundcolor green
+							Write-Host ""
+						}
+					#Vytvoreni noveho differencniho disku
+					Write-host "Creating new differencing disk for $vhd..." -foregroundcolor green
+					Write-Host ""
+					$diskpartskript = @"
+						create vdisk file=$path_diff parent $path_base
+						exit
+"@
+					$diskpartskript | diskpart
+					Write-host "Differencing disk for"$vhd"succesfully created..." -foregroundcolor green
+					Write-Host ""
+				}
 				bcdedit /set '{default}' device vhd=$path_diff_bcd
 				bcdedit /set '{default}' osdevice vhd=$path_diff_bcd
 				bcdedit /set '{default}' description "$vhd"
@@ -105,6 +117,8 @@ $diskpartskript = @"
 				Write-Host ""
 				Write-Host "Setting description for default record in bcd to $vhd..." -foregroundcolor green
 				start-sleep -s 10
+				write-host "Deleting Desired_VHD.txt ..." -foreground green
+				Remove-Item C:\Desired_VHD.txt -force
 				wpeutil reboot
 			}
 }
@@ -116,6 +130,15 @@ else
     {
         $disk_letter="C"
     }
+#Zjisteni, zda je na D:\ dostatek mista na rebuild v pripade, ze je na D:\ vice nez 1 VHD
+$VHDcount=(get-childItem D:\*.vhd).Count
+if(($VHDCount -gt 2) -and ($disk_letter -eq "D")){
+	$FreeSpace = ((get-wmiobject win32_logicaldisk) | where {$_.DeviceID -like "D:"}).FreeSpace/1GB
+	if($FreeSpace -lt "35"){
+		[System.Windows.Forms.MessageBox]::Show("Na D:\ je prilis malo mista pro Rebuild. Pokud jsi tam vytvarel nejake dokumenty, smaz jej prosim. V opacnem pripade kontaktuj technika.","Info", "OK")
+		exit
+	}
+}
 write-host "Disk $disk_letter detected..." -foreground green
 $txt_path = "$Disk_letter"+":\Desired_VHD.txt"
 $Disk_letter = $Disk_letter + ":\"
@@ -123,9 +146,8 @@ If (Test-Path -Path $txt_path)
     {
 		$vhd = "$disk_letter"+"Desired_VHD.txt"
 		$vhd = Get-Content $vhd
+		$vhd = $vhd[0]
 		Write-host "Chosen VHD version"$vhd"..." -foreground green
-		Remove-Item $txt_path
-		write-host "Deleting Desired_VHD.txt ..." -foreground green
 		GeneralRebuild($vhd)
     }
 elseif(!(Test-Path -Path "$Disk_Letter*_base.vhd"))
@@ -254,6 +276,56 @@ else
                     GeneralRebuild $vhd
                 })
             }
+			"VHD_Button6"
+            {
+                $AddClick.Add_Click({
+                    write-host $VHDs[6]
+                    $vhd = $VHDs[6].BaseName
+                    $vhd = $vhd -replace "C:", ""
+                    $vhd = $vhd -replace "_base",""
+                    GeneralRebuild $vhd
+                })
+            }
+			"VHD_Button7"
+            {
+                $AddClick.Add_Click({
+                    write-host $VHDs[7]
+                    $vhd = $VHDs[7].BaseName
+                    $vhd = $vhd -replace "C:", ""
+                    $vhd = $vhd -replace "_base",""
+                    GeneralRebuild $vhd
+                })
+            }
+			"VHD_Button8"
+            {
+                $AddClick.Add_Click({
+                    write-host $VHDs[8]
+                    $vhd = $VHDs[8].BaseName
+                    $vhd = $vhd -replace "C:", ""
+                    $vhd = $vhd -replace "_base",""
+                    GeneralRebuild $vhd
+                })
+            }
+			"VHD_Button9"
+            {
+                $AddClick.Add_Click({
+                    write-host $VHDs[9]
+                    $vhd = $VHDs[9].BaseName
+                    $vhd = $vhd -replace "C:", ""
+                    $vhd = $vhd -replace "_base",""
+                    GeneralRebuild $vhd
+                })
+            }
+			"VHD_Button10"
+            {
+                $AddClick.Add_Click({
+                    write-host $VHDs[10]
+                    $vhd = $VHDs[10].BaseName
+                    $vhd = $vhd -replace "C:", ""
+                    $vhd = $vhd -replace "_base",""
+                    GeneralRebuild $vhd
+                })
+            }
         }  
         }
 		$CMD_button = New-Object Windows.Forms.Button
@@ -269,5 +341,20 @@ else
 		$Restart_button.Text = "Restart"
 		$Restart_button.Add_Click({wpeutil reboot})
 		$MainForm.Controls.Add($Restart_button)
+		
+		$DelDriveECheckBox = New-Object Windows.Forms.CheckBox
+		$DelDriveECheckBox.Location = New-Object System.Drawing.Size(20,30)
+		$DelDriveECheckBox.Size = New-Object System.Drawing.Size(125,50)
+		$DelDriveECheckBox.Text = "Mam formatovat E:\?"
+		$DelDriveECheckBox.Checked = $True
+		$MainForm.Controls.Add($DelDriveECheckBox)
+		
+		$DelDiffCheckBox = New-Object Windows.Forms.CheckBox
+		$DelDiffCheckBox.Location = New-Object System.Drawing.Size(20,75)
+		$DelDiffCheckBox.Size = New-Object System.Drawing.Size(125,50)
+		$DelDiffCheckBox.Text = "Mam smazat puvodni a vytvorit novy diff?"
+		$DelDiffCheckBox.Checked = $True
+		$MainForm.Controls.Add($DelDiffCheckBox)
+		
 		$MainForm.ShowDialog()
 	}
