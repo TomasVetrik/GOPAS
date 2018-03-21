@@ -286,39 +286,7 @@ else
 	}
 	
 	#Vytvoreni odkazu na ostatni PC v ucebne
-	$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
-	New-Item $DesktopPath\Shares -itemtype directory
-	$SharesFolder = "$DesktopPath\Shares"
-	if($env:computername -like "*LEKTOR*") {
-		$Classroom = $env:computername -replace "LEKTOR", ""
-	}
-	if($env:computername -like "*STUDENT*") { 
-		$Classroom = $env:computername -replace "STUDENT", ""
-		$Classroom = $Classroom -replace "-.*", ""
-	}
-	
-	$WshShell = New-Object -comObject WScript.Shell
-	$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTOR$($Classroom).lnk")
-	$Shortcut.TargetPath = "\\LEKTOR$($Classroom)"
-	$Shortcut.Save()
-
-	$Student = 1
-	$Count = 1
-	while($Count -lt 13)
-	{
-		$Order = 0
-		if($Count -lt 10){$Order = "0" + $Count}
-		else{$Order = $Count}
-		$Computer = "STUDENT$($Classroom)-$Order"
-		$ComputerShare = "\\STUDENT$($Classroom)-$Order"
-		
-		$WshShell = New-Object -comObject WScript.Shell
-		$Shortcut = $WshShell.CreateShortcut("$SharesFolder\$Computer.lnk")
-		$Shortcut.TargetPath = "$ComputerShare"
-		$Shortcut.Save()
-
-		$Count++
-	}
+	CreateNetworkShortcuts
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
