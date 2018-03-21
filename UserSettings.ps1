@@ -286,7 +286,11 @@ else
 	}
 	
 	#Vytvoreni odkazu na ostatni PC v ucebne
-	CreateNetworkShortcuts
+	$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
+	if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
+	{
+		CreateNetworkShortcuts
+	}
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
