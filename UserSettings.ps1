@@ -289,7 +289,10 @@ else
 	$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
 	if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
 	{
-		CreateNetworkShortcuts
+		if(($env:username -like "*STUDENT*") -or ($env:username -like "*LEKTOR*"))
+		{
+			CreateNetworkShortcuts
+		}
 	}
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
