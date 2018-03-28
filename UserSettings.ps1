@@ -19,6 +19,16 @@ $UserSettings = "$Temp\UserSettings.ps1"
 $ErrorActionPreference = "SilentlyContinue"
 $Executed = $False
 
+#Vytvoreni odkazu na ostatni PC v ucebne
+$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
+if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
+{
+	if(($env:username -like "*STUDENT*") -or ($env:username -like "*LEKTOR*"))
+	{
+		CreateNetworkShortcuts
+	}
+}
+
 if((Test-Path $Settings_applied))
 {
 	if((Compare-Object $(Get-Content $Settings_applied) $(Get-Content $UserSettings)).SideIndicator.Length -ne $null)
@@ -283,16 +293,6 @@ else
 			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Blava.ps1"
 		}	
 		default {}
-	}
-	
-	#Vytvoreni odkazu na ostatni PC v ucebne
-	$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
-	if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
-	{
-		if(($env:username -like "*STUDENT*") -or ($env:username -like "*LEKTOR*"))
-		{
-			CreateNetworkShortcuts
-		}
 	}
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
