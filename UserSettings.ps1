@@ -23,7 +23,7 @@ $Executed = $False
 $DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
 if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
 {
-	if(($env:username -like "*STUDENT*") -or ($env:username -like "*LEKTOR*"))
+	if(($env:computername -like "*STUDENT*") -or ($env:computername -like "*LEKTOR*"))
 	{
 		CreateNetworkShortcuts
 	}
