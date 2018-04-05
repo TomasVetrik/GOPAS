@@ -3570,3 +3570,27 @@ Function ResetTime
 	get-service | where {$_.name -like "*W32Time*"} | stop-service
 	tzutil /s "Central European Standard Time"
 }
+
+Function CHOCO-INSTALL($InstallationName, $Counter = 0)
+{
+  write-host "Installing $InstallationName..." -foregroundcolor yellow
+  choco install $InstallationName -y
+  if($? -eq $True)
+  {
+    "Installation of $InstallationName completed succesfully" | out-file E:\Log.txt -encoding ascii -append
+  }
+  else
+  {
+    if($Counter -eq 3)
+    { 
+      "Installation of $InstallationName failed" | out-file E:\Log.txt -encoding ascii -append
+    }
+    else
+    {
+      write-host "Retrying to install $InstallationName" -foregroundcolor yellow
+      start-sleep -s 5
+      CHOCO-INSTALL $InstallationName $Counter++
+    }
+  }
+  start-sleep -s 2
+}
