@@ -3503,63 +3503,38 @@ Function CreateNetworkShortcuts
 	$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
 	New-Item $DesktopPath\Shares -itemtype directory
 	$SharesFolder = "$DesktopPath\Shares"
-	if($env:computername -like "*LEKTOR*") {
+	if($env:computername -like "*LEKTOR*") 
+	{
 		$Classroom = $env:computername -replace "LEKTOR", ""
 	}
-	if($env:computername -like "*STUDENT*") { 
+	if($env:computername -like "*STUDENT*") 
+	{ 
 		$Classroom = $env:computername -replace "STUDENT", ""
 		$Classroom = $Classroom -replace "-.*", ""
 	}
-	if($gateway -like "*10.202.*")
-	{
-		$WshShell = New-Object -comObject WScript.Shell
-		$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTORSK$($Classroom).lnk")
-		$Shortcut.TargetPath = "\\LEKTORSK$($Classroom)"
-		$Shortcut.Save()
 	
-		$Student = 1
-		$Count = 1
-		while($Count -lt 13)
-		{
-			$Order = 0
-			if($Count -lt 10){$Order = "0" + $Count}
-			else{$Order = $Count}
-			$Computer = "STUDENTSK$($Classroom)-$Order"
-			$ComputerShare = "\\STUDENTSK$($Classroom)-$Order"
-			
-			$WshShell = New-Object -comObject WScript.Shell
-			$Shortcut = $WshShell.CreateShortcut("$SharesFolder\$Computer.lnk")
-			$Shortcut.TargetPath = "$ComputerShare"
-			$Shortcut.Save()
-
-			$Count++
-		}
-	}
-	else
+	$WshShell = New-Object -comObject WScript.Shell
+	$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTOR$($Classroom).lnk")
+	$Shortcut.TargetPath = "\\LEKTOR$($Classroom)"
+	$Shortcut.Save()
+	
+	$Student = 1
+	$Count = 1
+	while($Count -lt 13)
 	{
-		$WshShell = New-Object -comObject WScript.Shell
-		$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTOR$($Classroom).lnk")
-		$Shortcut.TargetPath = "\\LEKTOR$($Classroom)"
-		$Shortcut.Save()
+		$Order = 0
+		if($Count -lt 10){$Order = "0" + $Count}
+		else{$Order = $Count}
+		$Computer = "STUDENT$($Classroom)-$Order"
+		$ComputerShare = "\\STUDENT$($Classroom)-$Order"
 		
-		$Student = 1
-		$Count = 1
-		while($Count -lt 13)
-		{
-			$Order = 0
-			if($Count -lt 10){$Order = "0" + $Count}
-			else{$Order = $Count}
-			$Computer = "STUDENT$($Classroom)-$Order"
-			$ComputerShare = "\\STUDENT$($Classroom)-$Order"
-			
-			$WshShell = New-Object -comObject WScript.Shell
-			$Shortcut = $WshShell.CreateShortcut("$SharesFolder\$Computer.lnk")
-			$Shortcut.TargetPath = "$ComputerShare"
-			$Shortcut.Save()
+		$WshShell = New-Object -comObject WScript.Shell
+		$Shortcut = $WshShell.CreateShortcut("$SharesFolder\$Computer.lnk")
+		$Shortcut.TargetPath = "$ComputerShare"
+		$Shortcut.Save()
 
-			$Count++
-		}
-	}
+		$Count++
+	}	
 }
 
 Function ResetTime 
