@@ -19,16 +19,6 @@ $UserSettings = "$Temp\UserSettings.ps1"
 $ErrorActionPreference = "SilentlyContinue"
 $Executed = $False
 
-#Vytvoreni odkazu na ostatni PC v ucebne
-$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
-if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
-{
-	if(($env:computername -like "*STUDENT*") -or ($env:computername -like "*LEKTOR*"))
-	{
-		CreateNetworkShortcuts
-	}
-}
-
 if((Test-Path $Settings_applied))
 {
 	if((Compare-Object $(Get-Content $Settings_applied) $(Get-Content $UserSettings)).SideIndicator.Length -ne $null)
@@ -302,4 +292,14 @@ else
 		Remove-Item $Settings_applied -force >> $null
 	}
 	Add-Content $Settings_applied $TempContent	
+}
+
+#Vytvoreni odkazu na ostatni PC v ucebne
+$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
+if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
+{
+	if(($env:computername -like "*STUDENT*") -or ($env:computername -like "*LEKTOR*"))
+	{
+		CreateNetworkShortcuts
+	}
 }
