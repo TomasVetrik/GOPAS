@@ -3324,6 +3324,7 @@ Function DetectMapNetworkShares
 		}
 		if($ServerName -ne "")
 		{
+			$Temp="D:\Temp"
 			write-host "Connecting to $ServerName..." -foregroundcolor green
 			
 			$password="$Temp\Password.txt"
@@ -3334,6 +3335,7 @@ Function DetectMapNetworkShares
 			else
 			{
 				$password=Get-Content $password
+				Remove-Item $Temp\Password.txt -Force
 			}
 			$OBJ = net use z: \\$ServerName\Startup_OS$ /user:ghostinstall $password /persistent:no 2>null | Out-Null
 			$OBJ = net use w: \\$ServerName\Startup_WinPE$ /user:ghostinstall $password /persistent:no 2>null | Out-Null
