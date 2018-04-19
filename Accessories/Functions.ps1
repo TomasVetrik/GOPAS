@@ -3566,8 +3566,49 @@ Function CHOCO-INSTALL($InstallationName, $Counter = 0)
     {
       write-host "Retrying to install $InstallationName" -foregroundcolor yellow
       start-sleep -s 5
-      CHOCO-INSTALL $InstallationName $Counter++
+	  $Counter++
+      CHOCO-INSTALL $InstallationName $Counter
     }
   }
   start-sleep -s 2
+}
+
+Function SettingsDualMonitor
+{
+	$Settings_applied = "D:\Temp\SwitchMonitor.txt"
+	if(!(Test-Path $Settings_applied))
+	{
+		Add-Content $Settings_applied "0"	
+	}
+	else
+	{
+		$Object = Get-Content $Settings_applied
+		if($Object -eq "0")
+		{		
+			write-host ""
+			# Nastavi stranu sekundarneho monitora
+			Write-Host "Setting monitor side" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
+			$Student = $env:computername
+			if($Student -like "Student*")
+			{
+				$Student = $Student.Substring($Student.length-2,2)
+				$int = [int]$Student
+				if($int % 2 -eq 1) 
+				{
+					Run "D:\Temp\SwitchMonitor.exe" "-1980"
+				}	
+				else
+				{
+					Run "D:\Temp\SwitchMonitor.exe" "1980"
+				}
+			}	
+			elseif ($Student -like "Lektor*")
+			{
+				Write-Host "Setting Duplicate monitor for Lector"
+				Run "DisplaySwitch.exe" "/clone"
+			}		
+			Remove-Item $Settings_applied
+			Add-Content $Settings_applied "1"	
+		}
+	}
 }
