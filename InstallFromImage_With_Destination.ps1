@@ -1,5 +1,7 @@
 ﻿. D:\Temp\Functions.ps1
 
+Start-Sleep -s 5
+
 Function InstallByName($Installation = "")
 {
 	if($Installation.Length -gt 0)
@@ -58,12 +60,6 @@ Function InstallByName($Installation = "")
 	}
 }
 
-$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
-
-$ComputerFileName = GetComputerNameFromServerByMac -Mac $MacAddress
-
-$TempDrive = "Z:\PostInstallers"
-
 $Bit_version=(Get-WMIObject win32_operatingsystem).osarchitecture
 
 if ($Bit_version -like "*32*") 
@@ -76,6 +72,12 @@ else
 }
 $SilverLightName = "D:\Temp\Silverlight_"+$Bit_version+".exe"
 Run $SilverLightName "/q"
+
+$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+
+$ComputerFileName = GetComputerNameFromServerByMac -Mac $MacAddress
+
+$TempDrive = "Z:\PostInstallers"
 
 Write-Host "Detected MacAddress $MacAddress" -ForegroundColor Green
 #Existencia suboru, z ktoreho dostava udaje co ma na pocitac nainstalovat. "Ucebna3.txt"
