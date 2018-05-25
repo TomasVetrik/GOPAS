@@ -244,6 +244,8 @@ else
 		Start-Process explorer.exe
 	}			   
 	
+	﻿Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
+	
 	#Nastaveni screensaveru - musi byt zde kvuli Multiprofile instalaci (pod uctem StudentEN jinak Screensaver nefunguje)
 	write-host "Setting screensaver..." -foregroundcolor green
 	regedit /s "C:\Program Files\Screensaver\screensaver.reg"			
@@ -283,9 +285,7 @@ else
 			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Blava.ps1"
 		}	
 		default {}
-	}
-	
-	﻿Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
+	}	
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
