@@ -285,6 +285,8 @@ else
 		default {}
 	}
 	
+	﻿Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
+	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
 	if(Test-Path $Settings_applied)
