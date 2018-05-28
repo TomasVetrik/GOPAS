@@ -224,7 +224,7 @@ else
 	{
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowRecent -value 0
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowFrequent -value 0
-	}
+	}	
 
 	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
 	write-host "All settings applied..." -foregroundcolor green
@@ -242,7 +242,8 @@ else
 		write-host "Process Explorer.exe not detected..." -foregroundcolor Yellow
 		write-host "Starting Process Explorer.exe" -foregroundcolor green
 		Start-Process explorer.exe
-	}			   
+	}			   	
+	
 	
 	﻿Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
 	
@@ -250,21 +251,18 @@ else
 	write-host "Setting screensaver..." -foregroundcolor green
 	regedit /s "C:\Program Files\Screensaver\screensaver.reg"			
 	
-	if($ServerName -eq "")
-	{
-		Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
-		$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
-		switch -wildcard ($gateway) 
-		{ 
-			"10.1.0.1" {$ServerName = "PrahaImage"}
-			"10.2.0.1" {$ServerName = "PrahaImage"}
-			"10.101.0.1" {$ServerName = "BrnoImage"}
-			"10.102.0.1" {$ServerName = "BrnoImage"} 
-			"10.201.0.1" {$ServerName = "BlavaImage"}
-			"10.202.0.1" {$ServerName = "BlavaImage"}   
-			default {$ServerName = ""}
-		}
-	}
+	Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
+	$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
+	switch -wildcard ($gateway) 
+	{ 
+		"10.1.0.1" {$ServerName = "PrahaImage"}
+		"10.2.0.1" {$ServerName = "PrahaImage"}
+		"10.101.0.1" {$ServerName = "BrnoImage"}
+		"10.102.0.1" {$ServerName = "BrnoImage"} 
+		"10.201.0.1" {$ServerName = "BlavaImage"}
+		"10.202.0.1" {$ServerName = "BlavaImage"}   
+		default {$ServerName = ""}
+	}	
 	Write-Host ""
 	Write-host "Running Custom Scripts for Branch $ServerName" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
 	switch -wildcard ($ServerName) 
@@ -287,7 +285,7 @@ else
 		default {}
 	}	
 	
-	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
+	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana	
 	$TempContent = Get-Content $UserSettings
 	if(Test-Path $Settings_applied)
 	{
@@ -296,6 +294,7 @@ else
 	Add-Content $Settings_applied $TempContent	
 }
 
+Write-host "Creating Shares"
 #Vytvoreni odkazu na ostatni PC v ucebne
 $DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
 if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
