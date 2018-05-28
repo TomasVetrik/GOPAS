@@ -2439,6 +2439,8 @@ Function SetAnK
 		Remove-Item $AnKPath -Force -Recurse >> $null
 	}
 	
+	Kill-Service "Ank_Service"
+	
 	Copy-With-ProgressBar "Z:\AnK\" $AnKPath
 	
 	if(!((Get-ItemProperty -Path 'HKLM:\Software\Microsoft\NET Framework Setup\NDP\v4\Full' -ErrorAction SilentlyContinue).Version -like '4.5*'))
