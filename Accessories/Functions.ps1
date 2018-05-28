@@ -2432,14 +2432,14 @@ Function SetAnK
 	
 	.EXAMPLE	
     SetAnK
-	#>
+	#>	
+	Kill-Service "Ank_Service"
+	
 	$AnKPath = "D:\Temp\Ank"
 	if(Test-Path $AnKPath)
 	{
 		Remove-Item $AnKPath -Force -Recurse >> $null
 	}
-	
-	Kill-Service "Ank_Service"
 	
 	Copy-With-ProgressBar "Z:\AnK\" $AnKPath
 	
