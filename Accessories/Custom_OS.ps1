@@ -45,7 +45,9 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		Kill-Process "armsvc*"
 		Kill-Process "AdobeARM*"
 		Kill-Service "AdobeARMservice"
-		Disable-Service "AdobeARMservice"
+		Disable-Service "AdobeARMservice"	
+		Kill-Process "Ank_Service"
+		Kill-Process "AnK"
 		
 		Start-Sleep 5
 		
@@ -56,8 +58,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	{
 		write-host "Previous versions of scripts in $Temp not detected..." -foregroundcolor Yellow
 	}
-	$errorActionPreference = "SilentlyContinue"
-	Kill-Process "AnK"
+	$errorActionPreference = "SilentlyContinue"	
 	
 	write-host "Copying new version of scripts..." -foregroundcolor green	
 	get-childitem "z:\Custom_OS" | % {copy-item $_.FullName $Temp -force -recurse}

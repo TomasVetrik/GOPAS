@@ -2433,7 +2433,6 @@ Function SetAnK
 	.EXAMPLE	
     SetAnK
 	#>	
-	Kill-Service "Ank_Service"
 	
 	$AnKPath = "D:\Temp\Ank"
 	if(Test-Path $AnKPath)
