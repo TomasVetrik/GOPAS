@@ -251,18 +251,21 @@ else
 	write-host "Setting screensaver..." -foregroundcolor green
 	regedit /s "C:\Program Files\Screensaver\screensaver.reg"			
 	
-	Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
-	$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
-	switch -wildcard ($gateway) 
-	{ 
-		"10.1.0.1" {$ServerName = "PrahaImage"}
-		"10.2.0.1" {$ServerName = "PrahaImage"}
-		"10.101.0.1" {$ServerName = "BrnoImage"}
-		"10.102.0.1" {$ServerName = "BrnoImage"} 
-		"10.201.0.1" {$ServerName = "BlavaImage"}
-		"10.202.0.1" {$ServerName = "BlavaImage"}   
-		default {$ServerName = ""}
-	}	
+	if($ServerName -eq "")
+	{
+		Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
+		$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
+		switch -wildcard ($gateway) 
+		{ 
+			"10.1.0.1" {$ServerName = "PrahaImage"}
+			"10.2.0.1" {$ServerName = "PrahaImage"}
+			"10.101.0.1" {$ServerName = "BrnoImage"}
+			"10.102.0.1" {$ServerName = "BrnoImage"} 
+			"10.201.0.1" {$ServerName = "BlavaImage"}
+			"10.202.0.1" {$ServerName = "BlavaImage"}   
+			default {$ServerName = ""}
+		}	
+	}
 	Write-Host ""
 	Write-host "Running Custom Scripts for Branch $ServerName" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
 	switch -wildcard ($ServerName) 
