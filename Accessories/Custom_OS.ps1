@@ -123,6 +123,7 @@ reg unload HKU\Default 2>null | Out-Null
 
 CheckNotebookPassword
 ChangeBootLink
+Set-ePrezence
 
 Write-Host ""
 Write-host "Upgrade Autologon" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 

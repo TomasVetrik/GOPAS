@@ -3006,7 +3006,6 @@ Function ChangeBootLink
 	{
 		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" $TMP -Force >> $null
 	}
-	
 }
 
 Function ChangePassword($Password="")
@@ -3612,4 +3611,33 @@ Function SettingsDualMonitor
 			Add-Content $Settings_applied "1"	
 		}
 	}
+}
+
+Function Set-ePrezence
+{
+	<#	
+	.SYNOPSIS
+	Nastavi ePrezence.
+	
+	.DESCRIPTION	
+	Set ePrezence.
+	Example: 
+    Set-ePrezence
+	
+	.EXAMPLE	
+	Set-ePrezence
+	#>
+	Write-Host "Adding ePrezence.lnk to Start Menu" -ForegroundColor Yellow
+	$ePrezencePath = "D:\Temp\ePrezence"
+	$StartMenuPath = "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\"	
+	$PublicDesktopPath = "C:\Users\Public\Desktop\"
+	If(Test-Path $StartMenuPath)
+	{
+		Copy-Item "$ePrezencePath\ePrezence.lnk" $StartMenuPath -Force >> $null
+	}
+	If(Test-Path $PublicDesktopPath)
+	{
+		Copy-Item "$ePrezencePath\ePrezence.lnk" $PublicDesktopPath -Force >> $null
+	}
+	Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
 }
