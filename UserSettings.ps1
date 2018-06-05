@@ -224,9 +224,27 @@ else
 	{
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowRecent -value 0
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowFrequent -value 0
-	}	
+	}
+
+	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
+	write-host "All settings applied..." -foregroundcolor green
+	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green
+	Stop-Process -processname Explorer
+	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
+	write-host "Detecting process Explorer.exe..." -foregroundcolor green
+	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name
+	if ($Explorer -like "explorer") 
+	{
+		write-host "Process Explorer.exe detected..." -foregroundcolor green
+	} 
+	else 
+	{
+		write-host "Process Explorer.exe not detected..." -foregroundcolor Yellow
+		write-host "Starting Process Explorer.exe" -foregroundcolor green
+		Start-Process explorer.exe
+	}			   
 	
-	﻿Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
 	
 	#Nastaveni screensaveru - musi byt zde kvuli Multiprofile instalaci (pod uctem StudentEN jinak Screensaver nefunguje)
 	write-host "Setting screensaver..." -foregroundcolor green
@@ -245,7 +263,7 @@ else
 			"10.201.0.1" {$ServerName = "BlavaImage"}
 			"10.202.0.1" {$ServerName = "BlavaImage"}   
 			default {$ServerName = ""}
-		}	
+		}
 	}
 	Write-Host ""
 	Write-host "Running Custom Scripts for Branch $ServerName" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
@@ -269,25 +287,7 @@ else
 		default {}
 	}	
 	
-	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
-	write-host "All settings applied..." -foregroundcolor green
-	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green
-	Stop-Process -processname Explorer
-	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
-	write-host "Detecting process Explorer.exe..." -foregroundcolor green
-	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name
-	if ($Explorer -like "explorer") 
-	{
-		write-host "Process Explorer.exe detected..." -foregroundcolor green
-	} 
-	else 
-	{
-		write-host "Process Explorer.exe not detected..." -foregroundcolor Yellow
-		write-host "Starting Process Explorer.exe" -foregroundcolor green
-		Start-Process explorer.exe
-	}			   	
-	
-	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana	
+	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
 	if(Test-Path $Settings_applied)
 	{
@@ -296,7 +296,6 @@ else
 	Add-Content $Settings_applied $TempContent	
 }
 
-Write-host "Creating Shares"
 #Vytvoreni odkazu na ostatni PC v ucebne
 $DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
 if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
