@@ -293,6 +293,7 @@ Function Proxy-OFF
 	$reg = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 	Set-ItemProperty -Path $reg -Name ProxyEnable -Value 0
 	$rtn = Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -Name ProxyEnable -Value 0
+	Set-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' -Name ProxyOverride -Value '*.local;<local>'
 	if($rtn) 
 	{
 	   Write-Host -ForegroundColor Green "Vypnute Proxy"
