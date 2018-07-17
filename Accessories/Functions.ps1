@@ -1973,7 +1973,7 @@ Function SetTabs($ClassRoom)
 	#>
 	Write-Host "Setting Tabs for Total Commander Ucebna $ClassRoom" -ForegroundColor Yellow
     $ErrorActionPreference  = "Stop"
-	[int[]] $NumberOfPCS = 8,12,8,8,8,8,8,12,8,8,8,0,12
+	[int[]] $NumberOfPCS = 8,12,8,8,4,8,8,8,12,8,8,8,0,12
 	$MaxNumber = $NumberOfPCS[[int]$ClassRoom-1]
 	$WinCMDDir = $env:APPDATA
 	$WinCMDDir = $WinCMDDir+"\Ghisler\wincmd.ini"
