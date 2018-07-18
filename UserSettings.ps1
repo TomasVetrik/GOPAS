@@ -248,6 +248,8 @@ else
 	write-host "Setting screensaver..." -foregroundcolor green
 	regedit /s "C:\Program Files\Screensaver\screensaver.reg"			
 	
+	winrm set winrm/config/client `@`{TrustedHosts=`"`*`"`}
+	
 	if($ServerName -eq "")
 	{
 		Write-host "Getting Gateway" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
