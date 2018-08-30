@@ -3641,5 +3641,5 @@ Function Set-ePrezence
 		Copy-Item "$ePrezencePath\ePrezence.lnk" $PublicDesktopPath -Force >> $null
 	}
 	Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
-	Register-ScheduledTask -Xml (get-content 'D:\Temp\ePrezence\ePrezence.xml' | out-string) -TaskName "ePrezence" –Force
+	#Register-ScheduledTask -Xml (get-content 'D:\Temp\ePrezence\ePrezence.xml' | out-string) -TaskName "ePrezence" –Force
 }
