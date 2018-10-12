@@ -40,6 +40,10 @@ function Install_Office_KBs($Path = "")
 			$ArgList = "/quiet /norestart"
 			Run $KBs_File_Path $ArgList
 		}	
+		if(Test-Path $Path_Temp)
+		{
+			Remove-Item $Path_Temp -Force -Recurse
+		}
 	}	
 }
 
