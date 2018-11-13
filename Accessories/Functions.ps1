@@ -855,18 +855,32 @@ Function Outlook2016Temp()
 	$a = Get-Process | Where-Object {$_.Name -eq "Outlook"}
 	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)		
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")	
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")	
 	Start-Sleep -s 3	
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 	Start-Sleep -s 3
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")    
+    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 	Start-Sleep -s 3	
 	Stop-Process -name outlook
@@ -930,40 +944,76 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
 		Start-Sleep -s 5                
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	    
+	    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("$Student")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("$Login")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 5 
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait(" ")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")       
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 5
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 		Start-Sleep -s 2                
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait(" ")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-		Start-Sleep -s 20                              
+		Start-Sleep -s 20       
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)                       
 		[System.Windows.Forms.SendKeys]::SendWait("%{F4}")
 		Start-Sleep -s 2
 	}
@@ -976,10 +1026,16 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
 		[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")
 		[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		Start-Sleep -s 5	
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	    
+	    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait(" ")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	    
+	    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
 		Start-Sleep -s 2
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
+        [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("%{F4}")
 		Start-Sleep -s 2		
 	}
@@ -1054,14 +1110,24 @@ Function ConfigureOutlookProfile2($Student,$Domain, $SourcePath, $LoginDomain="s
 	$a = Get-Process | Where-Object {$_.Name -eq "Outlook"}
 	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	Start-Sleep -s 5
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait('Pa$$w0rd')	
 	Start-Sleep -s 2
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
 	Start-Sleep -s 2
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	
+	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait(" ")
 	Start-Sleep -s 2	
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	
+	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("ENTER")
 	Start-Sleep -s 10
+    [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	
+	[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 	[System.Windows.Forms.SendKeys]::SendWait("%{F4}")
 	Start-Sleep -s 2
 	#Get-Process outlook | Stop-Process
