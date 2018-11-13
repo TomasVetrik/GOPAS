@@ -56,8 +56,6 @@ else
 
 	switch -wildcard ($gateway) 
 	{ 
-		"10.1.0.1" {Proxy-Praha}
-		"10.2.0.1" {Proxy-Praha} 
 		default {Proxy-Off}
 	}
 
