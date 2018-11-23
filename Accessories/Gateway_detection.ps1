@@ -9,7 +9,7 @@
 ######################################################
 
 #Definice promennych
-$Driverpaths = @("D:\Temp\Drivers\*\Net\*\*.inf")
+$Driverpaths = Get-ChildItem "D:\Temp\Drivers\*\Net\" -Recurse | Where { $_ -like "*.inf" }
 $ServerName=""
 
 . D:\Functions.ps1
