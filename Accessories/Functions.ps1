@@ -1646,7 +1646,7 @@ Function Get-Signature($pathOfFile)
    return $false
 }
 
-Function AddDrivers($Driverpath)
+Function Function AddDrivers($Driverpath)
 {
 	<#
 	.SYNOPSIS
@@ -1667,8 +1667,13 @@ Function AddDrivers($Driverpath)
 	$Activity = "Starting setup which will add drivers"
 	foreach($file in $SetupFiles)
 	{	
+			Kill-Process "rundll32"
+			Kill-Process "rundll32"
+			Kill-Process "rundll32"	
+			Start "D:\Controller.exe"
 			write-host "Starting $($File.FullName)" -foregroundcolor green
 			Start-Process $File.FullName -wait
+			Kill-Process "Controller"
 	}
 	
     $InfFiles = Get-ChildItem $Driverpath -Recurse -Filter *.inf
