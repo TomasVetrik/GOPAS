@@ -1646,7 +1646,7 @@ Function Get-Signature($pathOfFile)
    return $false
 }
 
-Function Function AddDrivers($Driverpath)
+Function AddDrivers($Driverpath)
 {
 	<#
 	.SYNOPSIS
