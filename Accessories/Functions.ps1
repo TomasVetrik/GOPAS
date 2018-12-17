@@ -3714,3 +3714,28 @@ Function Set-ePrezence
 	Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
 	#Register-ScheduledTask -Xml (get-content 'D:\Temp\ePrezence\ePrezence.xml' | out-string) -TaskName "ePrezence" –Force
 }
+
+Function Install-Choco-From-Local-Server
+{
+    # Detekce pobocky na zaklade vychozi brany. Funguje jak pro ucebnovou, tak privatni sit na kazde podobcce
+    $gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
+    write-host "Gateway $gateway detected..." -foregroundcolor green
+
+    #Rozhodovani, jaka funkce pro pobocku bude pouzita na zaklade detekce vychozi brany
+    switch -wildcard ($gateway) 
+    { 
+        "10.1.0.1" {$ServerName = "PrahaImage"}
+ 	    "10.2.0.1" {$ServerName = "PrahaImage"}
+        "10.101.0.1" {$ServerName = "BrnoImage"}
+	    "10.102.0.1" {$ServerName = "BrnoImage"} 
+        "10.201.0.1" {$ServerName = "BlavaImage"}
+	    "10.202.0.1" {$ServerName = "BlavaImage"}   
+        default {No_GOPAS_Network}
+    }
+
+    #Instalace Chocolatey
+    iex ((New-Object System.Net.WebClient).DownloadString("http://$ServerName.gopas.cz/install.txt"))
+
+    choco source add --name=internal_machine --source="http://$ServerName.gopas.cz/chocolatey" --priority=1
+    choco source remove --name=chocolatey
+}
