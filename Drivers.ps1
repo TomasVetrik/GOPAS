@@ -10,7 +10,7 @@
 
 #Definice promennych
 $Temp="D:\Temp"
-. $Temp\Functions.ps1
+. D:\Functions.ps1
 $MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
 if($Motherboard -eq $null)
 {

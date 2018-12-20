@@ -11,7 +11,7 @@
 #Definice promennych
 $Temp="D:\Temp"
 
-. $Temp\Functions.ps1
+. D:\Functions.ps1
 
 $profile=$env:USERNAME
 $users="Student", "StudentCZ", "StudentEN", "StudentSK", "Administrator", "Profile", "ECDL_CZ", "ECDL_SK", "ECDL_EN"

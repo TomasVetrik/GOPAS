@@ -11,7 +11,7 @@
 #Definice promennych
 $Temp="D:\Temp"
 
-. $Temp\Functions.ps1
+. D:\Functions.ps1
 
 $Test_VHDPath=Test-Path -path D:\Configuration.txt
 $Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain

@@ -1,4 +1,4 @@
-. D:\Temp\Functions.ps1
+. D:\Functions.ps1
 $Student = $env:computername
 if ($Student -like "Dell*") 
 {

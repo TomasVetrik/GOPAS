@@ -11,7 +11,7 @@
 
 #Definice promennych, detekce verze Office
 $Temp="D:\Temp"
-. $Temp\Functions.ps1
+. D:\Functions.ps1
 
 function Install_Office_KBs($Path = "")
 {

@@ -11,7 +11,7 @@
 #Definice promennych
 $Temp="D:\Temp"
 
-. $Temp\Functions.ps1
+. D:\Functions.ps1
 
 $Settings_applied = "C:\Users\$env:username\Documents\GlobalSettings.ps1"
 $UserSettings = "$Temp\GlobalSettings.ps1"
