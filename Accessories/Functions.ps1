@@ -3381,19 +3381,7 @@ Function DetectMapNetworkShares
 {
 	if(!(Test-Path "Z:\") -or !(Test-Path "W:\"))
 	{
-		$gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
-		write-host "Gateway $gateway detected..." -foregroundcolor green
-		#Rozhodovani, jaka funkce pro pobocku bude pouzita na zaklade detekce vychozi brany
-		switch -wildcard ($gateway) 
-		{ 
-			"10.1.0.1" {$ServerName = "PrahaImage"}
-			"10.2.0.1" {$ServerName = "PrahaImage"}
-			"10.101.0.1" {$ServerName = "BrnoImage"}
-			"10.102.0.1" {$ServerName = "BrnoImage"} 
-			"10.201.0.1" {$ServerName = "BlavaImage"}
-			"10.202.0.1" {$ServerName = "BlavaImage"}   
-			default {$ServerName = ""}
-		}
+        $ServerName = Get-ServerName
 		if($ServerName -ne "")
 		{
 			$Temp="D:\Temp"
@@ -3711,11 +3699,11 @@ Function Set-ePrezence
 	{
 		Copy-Item "$ePrezencePath\ePrezence.lnk" $PublicDesktopPath -Force >> $null
 	}
-	#Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
+	Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
 	#Register-ScheduledTask -Xml (get-content 'D:\Temp\ePrezence\ePrezence.xml' | out-string) -TaskName "ePrezence" –Force
 }
 
-Function Install-Choco-From-Local-Server
+Function Get-ServerName()
 {
     # Detekce pobocky na zaklade vychozi brany. Funguje jak pro ucebnovou, tak privatni sit na kazde podobcce
     $gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
@@ -3730,8 +3718,14 @@ Function Install-Choco-From-Local-Server
 	    "10.102.0.1" {$ServerName = "BrnoImage"} 
         "10.201.0.1" {$ServerName = "BlavaImage"}
 	    "10.202.0.1" {$ServerName = "BlavaImage"}   
-        default {No_GOPAS_Network}
+        default { $ServerName = ""}
     }
+    return $ServerName
+}
+
+Function Install-Choco-From-Local-Server
+{
+    $ServerName = Get-ServerName
 
     #Instalace Chocolatey
     iex ((New-Object System.Net.WebClient).DownloadString("http://$ServerName.gopas.cz/install.txt"))
