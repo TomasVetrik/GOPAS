@@ -57,7 +57,7 @@ else
 	$RecBin = $Shell.Namespace(0xA) 
 	$RecBin.Items() | %{Remove-Item $_.Path -Recurse -Confirm:$false}
 
-	RepairGhostPubCert
+	#RepairGhostPubCert
 	
 	MuteSounds
 	SetRunAsAdmin "D:\Temp\GDSClient\HONMSW_CLIENT.exe"
