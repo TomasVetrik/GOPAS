@@ -1676,7 +1676,7 @@ Function AddDrivers($Driverpath)
 			Kill-Process "Controller"
 	}
 	
-    $InfFiles = Get-ChildItem $Driverpath -Recurse -Filter *.inf
+    $InfFiles =  Get-ChildItem $Driverpath -Recurse | Where { $_ -like "*.inf" }
     $MaxCount = $InfFiles.Count
     $ProgressCount = 0
     $Activity = "Adding Drivers"	

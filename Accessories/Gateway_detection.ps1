@@ -9,49 +9,42 @@
 ######################################################
 
 #Definice promennych
-$Driverpaths = Get-ChildItem "D:\Temp\Drivers\*\Net\" -Recurse | Where { $_ -like "*.inf" }
-$ServerName=""
+$Driverpath = "D:\Temp\Drivers\*\Net\"
+$ServerName = ""
 
 . D:\Functions.ps1
 
 Function Drivers-Add
 {
 	write-host "Starting configuration scripts..." -foregroundcolor green
-	write-host "Adding NIC drivers to Driverstore" -foregroundcolor green
-	foreach($Driverpath in $Driverpaths)
-	{
-		if(Test-Path $Driverpath)
-		{
-			AddDrivers $Driverpath
-		}
-	}
+	write-host "Adding NIC drivers to Driverstore" -foregroundcolor green	
+    write-host $Driverpath
+	AddDrivers $Driverpath		
 	write-host "All NIC drivers added to Driverstore..." -foregroundcolor green
 }
 
-function wait-for-network ($tries) {
-	$CounterError = 0
-	while (1) 
-	{
-		$CounterError = $CounterError + 1
-		$Networks = gwmi -class Win32_NetworkAdapterConfiguration `
-				-filter DHCPEnabled=TRUE |
-						where { $_.DefaultIPGateway -ne $null }
+function wait-for-network($tries = 5, $CounterError = 0)
+{
+	$Networks = gwmi -class Win32_NetworkAdapterConfiguration `
+			-filter DHCPEnabled=TRUE |
+					where { $_.DefaultIPGateway -ne $null }
 
-		if (($Networks | measure).count -gt 0 ) 
-		{
-				break
-		}		
-		if($tries -eq $CounterError)
-		{
-			Drivers-Add
-			break
-		}
-		write-host "Waiting for Network" -foregroundcolor Yellow
-		start-sleep -s 5
+	if (($Networks | measure).count -gt 0 ) 
+	{
+		return
 	}
+	if($tries -eq $CounterError)
+	{
+		Drivers-Add
+		return
+	}
+	$CounterError++;	
+	write-host "Waiting for Network" -foregroundcolor Yellow
+	start-sleep -s 5
+	wait-for-network $tries $CounterError
 }
 
-Function ConnectToServer
+Function ConnectToServer($COUNTER = 0)
 {
 	if($ServerName -ne "")
 	{
@@ -84,7 +77,7 @@ Function ConnectToServer
 			{
 				write-host "Not connected $ServerName Retry..." -ForegroundColor Yellow
 				Start-Sleep 5
-				ConnectToServer
+				ConnectToServer $COUNTER
 			}			
 		}		
 	}
@@ -101,7 +94,7 @@ Function No_GOPAS_Network
 # Instalace ovladacu k sitovkam, ktere Windows nativne neznaji
 Drivers-Add
 
-wait-for-network 5
+wait-for-network
 
 # Detekce pobocky na zaklade vychozi brany. Funguje jak pro ucebnovou, tak privatni sit na kazde podobcce
 $gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway
@@ -118,5 +111,4 @@ switch -wildcard ($gateway)
 	"10.202.0.1" {$ServerName = "BlavaImage"}   
     default {No_GOPAS_Network}
 }
-$COUNTER = 0
 ConnectToServer
