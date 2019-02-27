@@ -141,6 +141,10 @@ else
 	write-host "Enabling RDP..."  -foregroundcolor green
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name fDenyTSconnections -Value "0"
 
+    #Vypnutie Automatickeho Instalovania Ovladacov z Windows Update
+	write-host "Turn off automatic device driver update..."  -foregroundcolor green
+	Set-ItemProperty -Path "HKLM:\Software\\Microsoft\Windows\CurrentVersion\DriverSearching" -Name SearchOrderConfig -Value "0"
+
 	#Vypnuti firewallu
 	write-host "Disabling firewall..."  -foregroundcolor green
 	netsh advfirewall set allprofiles state off >> $null
