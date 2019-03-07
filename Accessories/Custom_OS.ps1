@@ -46,9 +46,13 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		Kill-Process "AdobeARM*"
 		Kill-Service "AdobeARMservice"
 		Disable-Service "AdobeARMservice"	
+		Kill-Process "ngtray*"
+		Kill-Service "NGCLIENT"
+		Disable-Service "NGCLIENT"
+		GhostClientRemove
 		Kill-Process "Ank_Service"
 		Kill-Process "AnK"
-		Kill-Process "ePrezence"
+		Kill-Process "ePrezence"		
 		
 		Start-Sleep 5
 		
@@ -130,6 +134,7 @@ Write-Host ""
 Write-host "Upgrade Autologon" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
 Save-Current-Logon-User
 Remove-Autologon-Registry
+Set-Password-By-UserName
 Set-AutologonAutomatic
 Set-Autologon 0
 
@@ -202,4 +207,5 @@ Kill-Process "armsvc*"
 Kill-Process "AdobeARM*"
 Kill-Service "AdobeARMservice"
 Disable-Service "AdobeARMservice"
+SetDisplayDuplicateForLector
 Restart

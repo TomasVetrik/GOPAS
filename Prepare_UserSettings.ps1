@@ -17,7 +17,6 @@ $profile=$env:USERNAME
 $users="Student", "StudentCZ", "StudentEN", "StudentSK", "Administrator", "Profile", "ECDL_CZ", "ECDL_SK", "ECDL_EN"
 
 Proxy-OFF
-SettingsDualMonitor
 
 if ($users -match $profile)
 {
@@ -31,4 +30,9 @@ else
 {
 	Write-Host "User $profile detected..." -ForegroundColor Yellow
 	Write-Host "Strange Profile detected..." -ForegroundColor Yellow
+}
+
+if(!(Test-Path "D:\Temp\SetDisplayDuplicate.txt") -and ($env:computername -like "*LEKTOR*"))
+{	
+    Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\SetDisplayDuplicate.ps1" -Verb RunAs -WindowStyle Hidden	
 }

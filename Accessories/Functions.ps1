@@ -1881,6 +1881,14 @@ Function Finish-Settings-NO_SHUTDOWN
 	.EXAMPLE
 	Finish-Settings
 	#>
+	if($env:ComputerName -like "LEKTOR*" -and !(Test-Path "D:\temp\SetDisplayDuplicate.txt"))
+	{
+        Start-Sleep 5
+        SetDisplayDuplicate
+        Start-Sleep 5
+        New-Item -Path D:\temp\SetDisplayDuplicate.txt -ItemType "file" -Value "DONE"
+        Start-Sleep 5
+    }
 	if($env:username -eq "StudentEN")
 	{	
 		Set-Autologon 1 "StudentCZ"  
@@ -1920,6 +1928,14 @@ Function Finish-Settings
 	.EXAMPLE
 	Finish-Settings
 	#>
+	if($env:ComputerName -like "LEKTOR*" -and !(Test-Path "D:\temp\SetDisplayDuplicate.txt"))
+	{
+        Start-Sleep 5
+        SetDisplayDuplicate
+        Start-Sleep 5
+        New-Item -Path D:\temp\SetDisplayDuplicate.txt -ItemType "file" -Value "DONE"
+        Start-Sleep 5
+    }
 	if($env:username -eq "StudentEN")
 	{	
 		Set-Autologon 1 "StudentCZ"  
@@ -3025,6 +3041,43 @@ Function GhostClientRepair($Path)
 	#GhostClientInstall "C:\Windows\Temp\Custom_OS\GhostClientInstall\Client.msi"
 }
 
+Function GhostClientRemove
+{
+	<#	
+	.SYNOPSIS
+	Odstrani ghosta.
+	
+	.DESCRIPTION	
+	GhostClientRemove
+	Example: 
+    GhostClientRemove
+	
+	.EXAMPLE	
+	GhostClientRemove
+	#>
+	Write-Host "Repairing GhostClient" -ForegroundColor Yellow
+	$Pathx86 = "C:\Program Files\Symantec\"
+	$Pathx64 = "C:\Program Files (x86)\Symantec\"
+	$PathGhost = ""
+    If(Test-Path $Pathx86)
+	{
+		$GhostPath = $Pathx86
+	}
+	Elseif(Test-Path $Pathx64)
+	{
+		$GhostPath = $Pathx64
+	}
+	If(!($GhostPath -eq ""))
+	{
+		Remove-With-ProgressBar $GhostPath
+		Write-Host "DONE" -ForeGroundColor Green
+	}
+	Else
+	{		
+		Write-Host "Not found ghost path" -ForeGroundColor Yellow
+	}	
+}
+
 Function Set-WallPaper($SourcePath)
 {
 	<#	
@@ -3212,8 +3265,8 @@ Function Set-AutologonAutomatic()
 		"*Student" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
 		"*Administrator" {
 			if(Get-OSAbrivation -eq "w2k16")
-			{
-				Set-Autologon 1 $User_name 'Pa55w.rd'
+			{				
+					Set-Autologon 1 $User_name 'Pa55w.rd'				
 			}
 			else
 			{
@@ -3509,8 +3562,8 @@ Function GetComputerNameFromServerByMacXML($Mac)
 				{    
 					if($Mac -eq $MacAddres)
 					{
-						$ComputerName = $File.FullName.Replace(".my",".cfg")
-						return $ComputerName						
+						$ComputerName = $File.FullName.Replace(".my",".cfg")                        
+						return $ComputerName
 					}					
 				}
 			}
@@ -3633,44 +3686,61 @@ Function CHOCO-INSTALL($InstallationName, $Counter = 0)
   start-sleep -s 2
 }
 
-Function SettingsDualMonitor
+Function SetDisplayDuplicate
 {
-	$Settings_applied = "D:\Temp\SwitchMonitor.txt"
-	if(!(Test-Path $Settings_applied))
+	Write-Host "Setting Duplicate monitor for Lector"
+	& C:\Windows\System32\DisplaySwitch.exe /clone
+}
+
+Function SetDisplayDuplicateForLector
+{
+    $MacAddress = (Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+    $ComputerFileName = GetComputerNameFromServerByMacXML -Mac $MacAddress
+    if(Test-Path $ComputerFileName)
+    {
+	    [xml]$XMLConfigFile = Get-Content $ComputerFileName
+        $PCName = $XMLConfigFile.ComputerConfigData.Name
+    }
+	if($PCName -like "LEKTOR*")
 	{
-		Add-Content $Settings_applied "0"	
-	}
-	else
-	{
-		$Object = Get-Content $Settings_applied
-		if($Object -eq "0")
-		{		
-			write-host ""
-			# Nastavi stranu sekundarneho monitora
-			Write-Host "Setting monitor side" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-			$Student = $env:computername
-			if($Student -like "Student*")
-			{
-				$Student = $Student.Substring($Student.length-2,2)
-				$int = [int]$Student
-				if($int % 2 -eq 1) 
-				{
-					Run "D:\Temp\SwitchMonitor.exe" "-1980"
-				}	
-				else
-				{
-					Run "D:\Temp\SwitchMonitor.exe" "1980"
-				}
-			}	
-			elseif ($Student -like "Lektor*")
-			{
-				Write-Host "Setting Duplicate monitor for Lector"
-				Run "DisplaySwitch.exe" "/clone"
-			}		
-			Remove-Item $Settings_applied
-			Add-Content $Settings_applied "1"	
+		Write-Host "Setting Automatic Autologon" -ForegroundColor Yellow
+		$User_name=$env:username
+		if($User_name -eq $null)
+		{
+			$User_name = Get-Content $Temp\User.txt
+		}	
+
+		switch -wildcard ($User_name) 
+		{ 
+			"*StudentCZ" {Set-Autologon 1 $User_name}
+			"*StudentEN" {Set-Autologon 1 $User_name}
+			"*StudentSK" {Set-Autologon 1 $User_name}
+			"*Student" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
+			"*Administrator" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
+			default {Set-Autologon 1}
 		}
 	}
+}
+
+Function SettingsDualMonitor
+{	
+	write-host ""
+	# Nastavi stranu sekundarneho monitora
+	Write-Host "Setting monitor side" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
+	$Student = $env:computername
+	if($Student -like "Student*")
+	{
+		$Student = $Student.Substring($Student.length-2,2)
+		$int = [int]$Student
+		if($int % 2 -eq 1) 
+		{
+			Run "D:\Temp\SwitchMonitor.exe" "-1980"
+		}	
+		else
+		{
+			Run "D:\Temp\SwitchMonitor.exe" "1980"
+		}
+	}				
 }
 
 Function Set-ePrezence
@@ -3732,4 +3802,24 @@ Function Install-Choco-From-Local-Server
 
     choco source add --name=internal_machine --source="http://$ServerName.gopas.cz/chocolatey" --priority=1
     choco source remove --name=chocolatey
+}
+
+Function Set-Password-By-UserName
+{
+	Write-Host "Setting Password by UserName" -ForegroundColor Yellow
+	$User_name=$env:username
+	if($User_name -eq $null)
+	{
+		$User_name = Get-Content $Temp\User.txt
+	}	
+
+	switch -wildcard ($User_name) 
+	{ 
+		"*StudentCZ" { ChangePassword }
+		"*StudentEN" { ChangePassword }
+		"*StudentSK" { ChangePassword }
+		"*Student" { ChangePassword 'Pa$$w0rd'}
+		"*Administrator" { ChangePassword 'Pa$$w0rd'}
+		default { ChangePassword }
+	}
 }

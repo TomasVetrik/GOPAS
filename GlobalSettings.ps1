@@ -64,7 +64,7 @@ else
 	#Nastavi v ovladacom panely zobrazenie na Large icons
 	Set-ControlPanelViewToLargeIcons
 	
-	StandbyAndMonitorTimeout
+	StandbyAndMonitorTimeout    
 	
 	Set-WallPaper "$Temp\GOPAS_Background.jpg"
 
