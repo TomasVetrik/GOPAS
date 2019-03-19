@@ -3055,10 +3055,10 @@ Function GhostClientRemove
 	.EXAMPLE	
 	GhostClientRemove
 	#>
-	Write-Host "Repairing GhostClient" -ForegroundColor Yellow
+	Write-Host "Removing GhostClient" -ForegroundColor Yellow
 	$Pathx86 = "C:\Program Files\Symantec\"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\"
-	$PathGhost = ""
+	$GhostPath = ""
     If(Test-Path $Pathx86)
 	{
 		$GhostPath = $Pathx86
@@ -3475,7 +3475,7 @@ Function RepairGhostPubCert
 	Write-Host "Repairing GhostClient Certificate" -ForegroundColor Yellow
 	$Pathx86 = "C:\Program Files\Symantec\Ghost"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\Ghost"
-	$PathGhost = ""
+	$GhostPath = ""
     If(Test-Path $Pathx86)
 	{
 		$GhostPath = $Pathx86
