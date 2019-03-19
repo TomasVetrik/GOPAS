@@ -14,6 +14,11 @@ $ServerName = ""
 
 . D:\Functions.ps1
 
+Kill-Process "ngtray*"
+Kill-Service "NGCLIENT"
+Disable-Service "NGCLIENT"
+GhostClientRemove
+
 Function Drivers-Add
 {
 	write-host "Starting configuration scripts..." -foregroundcolor green
