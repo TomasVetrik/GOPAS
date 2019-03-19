@@ -3019,7 +3019,7 @@ Function GhostClientRepair($Path)
 	Write-Host "Repairing GhostClient" -ForegroundColor Yellow
 	$Pathx86 = "C:\Program Files\Symantec\"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\"
-	$PathGhost = ""
+	$GhostPath = ""
     If(Test-Path $Pathx86)
 	{
 		$GhostPath = $Pathx86
