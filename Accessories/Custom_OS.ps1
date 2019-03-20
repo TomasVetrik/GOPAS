@@ -76,7 +76,9 @@ else
 	write-host "Applying settings based on latest branch detected..." -foregroundcolor green
 }
 
-Set-ConsoleFont -x 8 -y 12
+Import-Module "D:\Temp\SetConsoleFont.ps1"
+Set-ConsoleFont 10
+
 (Get-Process -Name cmd).MainWindowHandle | foreach { Set-WindowStyle MAXIMIZE $_ }
 
 #na fullku
@@ -111,8 +113,6 @@ C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\UserSettings.
 write-host ""
 write-host "Starting GDS Postinstall phase..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run -Name "Prepare_UserSettings" -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell -windowstyle hidden $Temp\Prepare_UserSettings.ps1"
-#write-host "Registering Gopas Service for remote reinstall" -foregroundcolor Yellow
-#C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GopasService\GDS_Create_Service.ps1"
 write-host "Registering Gopas Client Service" -foregroundcolor Yellow
 C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GDSClient\GDSClient_Create_Service.ps1"
 
@@ -130,7 +130,7 @@ Write-Host ""
 Write-host "Upgrade Autologon" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor 
 Save-Current-Logon-User
 Remove-Autologon-Registry
-Set-Password-By-UserName
+#Set-Password-By-UserName
 Set-AutologonAutomatic
 Set-Autologon 0
 
@@ -147,8 +147,6 @@ else
 	write-host "Removing AutologonCount registry value..." -foregroundcolor green
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name AutoLogonCount
 }
-
-Automatic-Service "NGCLIENT"
 
 Copy-Item D:\Temp\Exchange.bat C:\Windows\System32\Exchange.bat -Force
 Copy-Item D:\Temp\Exchange.bat C:\Windows\System32\Outlook.bat -Force

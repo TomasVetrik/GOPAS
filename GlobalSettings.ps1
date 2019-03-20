@@ -230,12 +230,13 @@ else
 	}
 
 	#Nastaveni obrazu na rezim Clone
-	$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
-	$Lektor = import-csv "$Temp\Database.csv" | where {(($_.mac1 -eq $MacAddress) -or ($_.mac2 -eq $MacAddress)) -and ($_.OFFICE -like "LEKTOR*")}
-	if([bool]$Lektor -eq $true)
+	$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress	
+	$ComputerName = GetComputerNameFromServerByMacXML 
+	if($ComputerName -like "LEKTOR*")
 	{
 		write-host "LEKTOR PC detected setting display to clone" -foregroundcolor green
 		displayswitch.exe /clone
+		New-Item -Path D:\temp\SetDisplayDuplicate.txt -ItemType "file" -Value "DONE"
 	}
 	else
 	{

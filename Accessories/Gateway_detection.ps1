@@ -96,6 +96,9 @@ Function No_GOPAS_Network
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Custom_OS.ps1"
 }
 
+# Spusti explorer, ak nie je spusteni a odklikne action center
+RepairACandExplorer
+
 # Instalace ovladacu k sitovkam, ktere Windows nativne neznaji
 Drivers-Add
 

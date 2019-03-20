@@ -302,8 +302,7 @@ Function Proxy-OFF
 
 Function SetRunAsAdmin($FilePath)
 {
-	New-Item "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name $FilePath -Value "~ RUNASADMIN"
-	
+	New-Item "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" -Name $FilePath -Value "~ RUNASADMIN"	
 }
 
 Function Proxy-Praha
@@ -1171,7 +1170,7 @@ Function Run($Path, $ArgList="")
 	.EXAMPLE
 	Run "C:\Install.exe" '/q /norestart'
 	#>
-	Write-Host "Spustenie $Path" -ForegroundColor Yellow
+	Write-Host "Spustenie $Path..." -ForegroundColor Yellow -NoNewline
 	if($ArgList -eq "")
 	{
 		Start-Process -FilePath $Path -Wait -Verb RunAs
@@ -1180,7 +1179,7 @@ Function Run($Path, $ArgList="")
 	{
 		Start-Process -FilePath $Path -ArgumentList $ArgList -Wait -Verb RunAs
 	}	
-	Write-Host -ForegroundColor Green "Dokoncene spustenie $Path."
+	Write-Host -ForegroundColor Green "Success"
 }
 
 Function Set-Autologon($Setter, $UserName="", $Password='')
@@ -1311,9 +1310,9 @@ Function Extract($File, $Destination)
 	$shell_app=new-object -com shell.application	
 	$zip_file = $shell_app.namespace($File)
 	$dest = $shell_app.namespace($Destination)			
-	Write-Host "Start with extracting $File" -ForegroundColor Yellow
+	Write-Host "Start with extracting $File" -ForegroundColor Yellow  -NoNewline
 	$dest.Copyhere($zip_file.items(), 0x14)
-	Write-Host "Hotovo" -ForegroundColor Green
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function Extract-ZIPFile($Path="", $File="", $Destination)
@@ -1431,9 +1430,9 @@ Function RenamePC($PCName)
 	#>
 	
 	$ComputerName = Get-WmiObject Win32_ComputerSystem
-	Write-Host "Rename Computer $ComputerName to $PCName" -ForegroundColor Yellow
+	Write-Host "Rename Computer $ComputerName to $PCName" -ForegroundColor Yellow -NoNewline
 	$ComputerName.Rename($PCName)
-	Write-Host "Replace: "$PCName -ForegroundColor Green
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function Get-WindowsVersion
@@ -1670,10 +1669,10 @@ Function AddDrivers($Driverpath)
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"	
-			Start "D:\Controller.exe"
+			$proc = Start-Process 'C:\windows\System32\WindowsPowershell\v1.0\powershell.exe' -ArgumentList 'D:\Controller.ps1' -Passthru -WindowStyle Minimized
 			write-host "Starting $($File.FullName)" -foregroundcolor green
 			Start-Process $File.FullName -wait
-			Kill-Process "Controller"
+			Stop-Process $proc.ID
 	}
 	
     $InfFiles =  Get-ChildItem $Driverpath -Recurse | Where { $_ -like "*.inf" }
@@ -1696,7 +1695,7 @@ Function AddDrivers($Driverpath)
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"
 			Kill-Process "rundll32"	
-			Start "D:\Controller.exe"
+			$proc = Start-Process 'C:\windows\System32\WindowsPowershell\v1.0\powershell.exe' -ArgumentList 'D:\Controller.ps1' -Passthru -WindowStyle Minimized
 			$Objects = PnPutil.exe -i -a $file.fullname
 			foreach($Object in $Objects)
 			{
@@ -1720,7 +1719,7 @@ Function AddDrivers($Driverpath)
 					$except = "DONE"
 				}
 			}
-			Kill-Process "Controller"
+			Stop-Process $proc.ID
 			if($except -eq "DONE")
 			{
 				Write-Host "$file $ProcInf $PubInf : $except" -ForegroundColor Green    
@@ -2204,10 +2203,10 @@ Function GhostClient-Off
 	if ($GHOST -like "NGCLIENT") 
 	{
 		Write-Host "GHOST service detected..." -ForegroundColor Green
-		Write-Host "Stopping GHOST service..." -ForegroundColor Yellow
+		Write-Host "Stopping GHOST service..." -ForegroundColor Yellow -NoNewline
 		Set-Service NGCLIENT -startuptype "Automatic"
 		Stop-Service NGCLIENT
-        Write-Host "DONE" -ForegroundColor Green
+        Write-Host "Success" -ForegroundColor Green
 	} 
 	else 
 	{
@@ -2234,15 +2233,51 @@ Function GhostControlService-Off
 	if ($GHOST -like "GhostClientControll") 
 	{
 		Write-Host "GhostClientControll service detected..." -ForegroundColor Green
-		Write-Host "Stopping GhostClientControll service..." -ForegroundColor Yellow
+		Write-Host "Stopping GhostClientControll service..." -ForegroundColor Yellow -NoNewline
 		Set-Service GhostClientControll -startuptype "Automatic"
 		Stop-Service GhostClientControll
-        Write-Host "DONE" -ForegroundColor Green
+        Write-Host "Success" -ForegroundColor Green
 	} 
 	else 
 	{
 		Write-Host "GhostClientControll service not detected..." -ForegroundColor Yellow
 	}
+}
+
+Function MouseClick($dx, $dy)
+{
+	Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern void mouse_event(int flags, int dx, int dy, int cButtons, int info);' -Name U32 -Namespace W;		
+	[W.U32]::mouse_event(6,$dx,$dy,0,0);
+}
+
+Function RepairACandExplorer
+{
+	Write-Host "Repairing Action Center and starting Explorer..." -ForegroundColor Yellow -NoNewline	
+	Stop-Process -processname Explorer
+	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
+	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name
+	if (!($Explorer -like "explorer"))
+	{
+		Start-Process explorer.exe
+	}
+	Start-Sleep -Seconds 5
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
+	[System.Windows.Forms.SendKeys]::SendWait("{DOWN}")
+	Start-Sleep -Seconds 2	
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
+	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+	Start-Sleep -Seconds 2	
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
+	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
+	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
+	[System.Windows.Forms.SendKeys]::SendWait("{ESC}")
+	Start-Sleep -Seconds 2	
+	MouseClick(0,0)	
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function Set-WOL
@@ -2259,7 +2294,7 @@ Function Set-WOL
 	.EXAMPLE
 	Set-WOL
 	#>	
-	Write-Host "Setting regisrty for WOL" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
+	Write-Host "Setting registry for WOL" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
 	$GroupPolicePath = "C:\Windows\System32\GroupPolicy\Machine\Scripts\"
 	if(!(Test-Path $GroupPolicePath))	
 	{
@@ -2269,16 +2304,19 @@ Function Set-WOL
     Copy-Item "$Temp\scripts.ini"  $GroupPolicePath -Force
     Copy-Item "$Temp\psscripts.ini"  $GroupPolicePath -Force
 	
+	. D:\Temp\WOL.ps1
+	
 	$PathFile = "$Temp\Check\WOL.ps1"
 	if(!(Test-Path $PathFile))
-	{
+	{			
+		Start-Sleep -Seconds 2
 		gpedit.msc
-		Start-Sleep -Seconds 5
+		Start-Sleep -Seconds 5		
 		[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
 		[Microsoft.VisualBasic.Interaction]::AppActivate("gpedit.msc")
-		[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")
+		[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
 		[System.Windows.Forms.SendKeys]::SendWait("{RIGHT}")
-		Start-Sleep -Seconds 2
+		Start-Sleep -Seconds 2		
 		[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
 		[Microsoft.VisualBasic.Interaction]::AppActivate("gpedit.msc")
 		[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")
@@ -2349,14 +2387,14 @@ Function ChangeNetworkLocation
 	$WorkNetwork = 1 
 	
 	Write-Host "Set network location" -ForegroundColor $Global:UserInputColor -BackgroundColor $Global:bgColor
-	Write-Host "Changing Network Location to Private Network" -ForegroundColor Yellow
+	Write-Host "Changing Network Location to Private Network" -ForegroundColor Yellow  -NoNewline
 	if($INDomain -eq "true") { return } 
 
 	$networkListManager = [Activator]::CreateInstance([Type]::GetTypeFromCLSID([Guid]"{DCB00C01-570F-4A9B-8D69-199FDBA5723B}")) 
 	$connections = $networkListManager.GetNetworkConnections() 
 
 	$connections | % {$_.GetNetwork().SetCategory($WorkNetwork)}
-	Write-Host "Network location DONE" -ForegroundColor Green
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function StandbyAndMonitorTimeout($Standby=0, $Monitor=0)
@@ -2373,11 +2411,12 @@ Function StandbyAndMonitorTimeout($Standby=0, $Monitor=0)
 	.EXAMPLE
 	StandbyAndMonitorTimeout
 	#>	
+	Write-Host "Setting Power scheme..." -ForegroundColor Yellow -NoNewline
 	Powercfg /change /standby-timeout-ac $Standby
 	Powercfg /change /standby-timeout-dc $Standby
 	Powercfg /change /monitor-timeout-dc $Monitor
 	Powercfg /change /monitor-timeout-ac $Monitor
-	Write-Host "Setting Power scheme..." -ForegroundColor Yellow	
+	write-host "Success" -ForegroundColor Green
 	Write-Host "Display will be turned of after $Monitor minutes..." -ForegroundColor Green
 }
 
@@ -2459,8 +2498,9 @@ Function MuteSounds
 	.EXAMPLE
 	MuteSounds
 	#>
+	Write-Host "Mute Sounds..." -ForegroundColor Yellow
 	& "$Temp\nircmd.exe" mutesysvolume 1
-	Write-Host "Mute Sounds" -ForegroundColor Green
+	Write-Host "Success" -ForegroundColor Yellow -NoNewline
 }
 
 Function CheckVersionOfNetFramework($ver="")
@@ -2520,8 +2560,7 @@ Function SetAnK
 	
 	.EXAMPLE	
     SetAnK
-	#>	
-	
+	#>		
 	$AnKPath = "D:\Temp\Ank"
 	if(Test-Path $AnKPath)
 	{
@@ -2562,9 +2601,10 @@ Function DeviceInstalationFromWU($number)
 	"for off"
 	DeviceInstalationFromWU 3
 	#>
-	Write-Host "Setting Windows Update device instalation to $number" -ForegroundColor Yellow
+	Write-Host "Setting Windows Update device instalation to $number" -ForegroundColor Yellow -NoNewline
 	regedit.exe /s "$Temp\Custom_OS\DeviceInstallFromWU.reg"	
 	Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\DriverSearching -Name SearchOrderConfig -Value $number
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function Copy-Directory($pathFrom, $pathTo)
@@ -2602,8 +2642,9 @@ Function Restart-Service($serviceName)
     $GDS_Service = (Get-Service | where {$_.Name -eq $serviceName}).Name
 	if ($GDS_Service -ne $null)
 	{
-		Write-Host "Restarting $serviceName service..." -ForegroundColor Yellow
+		Write-Host "Restarting $serviceName service..." -ForegroundColor Yellow -NoNewline
 		Start-Service -Name $GDS_Service
+		Write-Host "Success" -ForegroundColor Green
 	}
 }
 Function Automatic-Service($ServiceName)
@@ -2611,8 +2652,9 @@ Function Automatic-Service($ServiceName)
 	$GDS_Service = (Get-Service | where {$_.name -eq $ServiceName}).Name
 	if ($GDS_Service -ne $null) 
 	{
-		write-host "Starting $ServiceName service..." -foregroundcolor Yellow
+		write-host "Starting $ServiceName service..." -foregroundcolor Yellow -NoNewline
 		Set-Service $ServiceName -startuptype "Automatic"
+		Write-Host "Success" -ForegroundColor Green
 	}
 } 
 
@@ -2621,8 +2663,9 @@ Function Disable-Service($ServiceName)
 	$GDS_Service = (Get-Service | where {$_.Name -eq $serviceName}).Name
 	if ($GDS_Service -ne $null)
 	{
-		Write-Host "Stopping $serviceName service..." -ForegroundColor Yellow
+		Write-Host "Stopping $serviceName service..." -ForegroundColor Yellow -NoNewline
 		Set-Service –Name $ServiceName –StartupType "Disabled"
+		Write-Host "Success" -ForegroundColor Green
 	}	
 }
 
@@ -2631,8 +2674,9 @@ Function Kill-Service($serviceName)
 	$GDS_Service = (Get-Service | where {$_.Name -eq $serviceName}).Name
 	if ($GDS_Service -ne $null)
 	{
-		Write-Host "Stopping $serviceName service..." -ForegroundColor Yellow
+		Write-Host "Stopping $serviceName service..." -ForegroundColor Yellow -NoNewline
 		Stop-Service -Name $GDS_Service
+		Write-Host "Success" -ForegroundColor Green
 	}
 }
 
@@ -2654,8 +2698,9 @@ Function Kill-Process($programName)
 
 	If(!($isRunning -eq $null))
 	{
-		Write-Host "Stopping $programName process" -ForegroundColor Yellow
+		Write-Host "Stopping $programName process..." -ForegroundColor Yellow -NoNewline
 		Stop-Process -ProcessName $programName -Force
+		Write-Host "Success" -ForegroundColor Green
 	}
 }
 
@@ -2676,7 +2721,7 @@ Function Add-MSProjectAccount($keyPath,$accountName, $pwaURL)
 	Add-MSProjectAccount "hkcu:\Software\Microsoft\Office\14.0\MS Project\Profiles\" "Default" "http://project.skola.cz/pwatest"
 	#>
 	$guid = [System.Guid]::NewGuid()	
-	Write-Host "Adding MS Project Account" -ForegroundColor Yellow
+	Write-Host "Adding MS Project Account..." -ForegroundColor Yellow -NoNewline
 	New-Item -Path "$keyPath$accountName" -force >> $null
 	New-ItemProperty -Path "$keyPath$accountName" -Name Name -PropertyType String -Value $accountName -Force >> $null
 	New-ItemProperty -Path "$keyPath$accountName" -Name GUID -PropertyType String -Value "{$guid}" -Force >> $null
@@ -2735,7 +2780,7 @@ Function EnableIEActiveXControl
 	.EXAMPLE	
 	EnableIEActiveXControl
 	#>
-	Write-Host "Enabling IE Active X Control" -ForegroundColor Yellow
+	Write-Host "Enabling IE Active X Control..." -ForegroundColor Yellow
 	$AppName = "Flash for IE"
 	$GUID = "{D27CDB6E-AE6D-11CF-96B8-444553540000}"
 	$Flag = "0x00000000"
@@ -3016,7 +3061,7 @@ Function GhostClientRepair($Path)
 	.EXAMPLE	
 	GhostClientRepair "C:\Windows\Temp\Custom_OS\Ghost"
 	#>
-	Write-Host "Repairing GhostClient" -ForegroundColor Yellow
+	Write-Host "Repairing GhostClient..." -ForegroundColor Yellow -NoNewline
 	$Pathx86 = "C:\Program Files\Symantec\"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\"
 	$GhostPath = ""
@@ -3032,7 +3077,7 @@ Function GhostClientRepair($Path)
 	{
 		Remove-With-ProgressBar $GhostPath"Ghost"
 		Copy-With-ProgressBar $Path $GhostPath"Ghost"
-		Write-Host "DONE" -ForeGroundColor Green
+		Write-Host "Success" -ForeGroundColor Green
 	}
 	Else
 	{		
@@ -3055,7 +3100,7 @@ Function GhostClientRemove
 	.EXAMPLE	
 	GhostClientRemove
 	#>
-	Write-Host "Removing GhostClient" -ForegroundColor Yellow
+	Write-Host "Removing GhostClient..." -ForegroundColor Yellow -NoNewline
 	$Pathx86 = "C:\Program Files\Symantec\"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\"
 	$GhostPath = ""
@@ -3070,7 +3115,7 @@ Function GhostClientRemove
 	If(!($GhostPath -eq ""))
 	{
 		Remove-With-ProgressBar $GhostPath
-		Write-Host "DONE" -ForeGroundColor Green
+		Write-Host "Success" -ForeGroundColor Green
 	}
 	Else
 	{		
@@ -3193,7 +3238,7 @@ Function RenameUserAccount($OldName, $NewName)
 
 Function RemoveUserAccount($Account)
 {
-	write-host "Deleting $Account..." -ForeGroundColor Yellow
+	write-host "Deleting $Account..." -ForeGroundColor Yellow -NoNewline
 	& net user $Account /delete > 2
 	write-host "Deleted" -ForeGroundColor Green
 }
@@ -3234,12 +3279,13 @@ Function OfficeRearm()
 
 Function Remove-Autologon-Registry()
 {
-	Write-Host "Removing Autologon from registry" -ForegroundColor Yellow
+	Write-Host "Removing Autologon from registry..." -ForegroundColor Yellow -NoNewline
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AutoLogonCount" -Force
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "AutoAdminLogon" -Force	
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "ForceAutoLogon" -Force
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "DefaultPassword" -Force
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "DefaultUserName" -Force
+	Write-Host "Success" -ForegroundColor Green
 }
 
 Function Save-Current-Logon-User()
@@ -3250,7 +3296,7 @@ Function Save-Current-Logon-User()
 
 Function Set-AutologonAutomatic()
 {	
-	Write-Host "Setting Automatic Autologon" -ForegroundColor Yellow
+	Write-Host "Setting Automatic Autologon..." -ForegroundColor Yellow
 	$User_name=$env:username
 	if($User_name -eq $null)
 	{
@@ -3472,7 +3518,7 @@ Function Shutdown($Time=15)
 
 Function RepairGhostPubCert
 {
-	Write-Host "Repairing GhostClient Certificate" -ForegroundColor Yellow
+	Write-Host "Repairing GhostClient Certificate..." -ForegroundColor Yellow -NoNewline
 	$Pathx86 = "C:\Program Files\Symantec\Ghost"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\Ghost"
 	$GhostPath = ""
@@ -3487,7 +3533,7 @@ Function RepairGhostPubCert
 	If(!($GhostPath -eq ""))
 	{
 		Remove-Item "$GhostPath\pubkey.crt"
-		Write-Host "DONE" -ForeGroundColor Green
+		Write-Host "Success" -ForeGroundColor Green
 	}
 	Else
 	{		
@@ -3693,8 +3739,8 @@ Function SetDisplayDuplicate
 }
 
 Function SetDisplayDuplicateForLector
-{
-    $MacAddress = (Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+{		
+	$MacAddress = (Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
     $ComputerFileName = GetComputerNameFromServerByMacXML -Mac $MacAddress
     if(Test-Path $ComputerFileName)
     {
@@ -3704,21 +3750,7 @@ Function SetDisplayDuplicateForLector
 	if($PCName -like "LEKTOR*")
 	{
 		Write-Host "Setting Automatic Autologon" -ForegroundColor Yellow
-		$User_name=$env:username
-		if($User_name -eq $null)
-		{
-			$User_name = Get-Content $Temp\User.txt
-		}	
-
-		switch -wildcard ($User_name) 
-		{ 
-			"*StudentCZ" {Set-Autologon 1 $User_name}
-			"*StudentEN" {Set-Autologon 1 $User_name}
-			"*StudentSK" {Set-Autologon 1 $User_name}
-			"*Student" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
-			"*Administrator" {Set-Autologon 1 $User_name 'Pa$$w0rd'}
-			default {Set-Autologon 1}
-		}
+		Set-Autologon 1
 	}
 }
 
