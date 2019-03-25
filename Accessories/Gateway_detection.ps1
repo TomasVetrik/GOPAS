@@ -96,13 +96,15 @@ Function No_GOPAS_Network
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Custom_OS.ps1"
 }
 
-# Spusti explorer, ak nie je spusteni a odklikne action center
-RepairACandExplorer
+MouseClick(0,0)
 
 # Instalace ovladacu k sitovkam, ktere Windows nativne neznaji
 Drivers-Add
 
 wait-for-network
+
+# Spusti explorer, ak nie je spusteni a odklikne action center
+RepairACandExplorer
 
 # Detekce pobocky na zaklade vychozi brany. Funguje jak pro ucebnovou, tak privatni sit na kazde podobcce
 $gateway=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).DefaultIPGateway

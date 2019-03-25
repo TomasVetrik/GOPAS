@@ -235,8 +235,7 @@ else
 	if($ComputerName -like "LEKTOR*")
 	{
 		write-host "LEKTOR PC detected setting display to clone" -foregroundcolor green
-		displayswitch.exe /clone
-		New-Item -Path D:\temp\SetDisplayDuplicate.txt -ItemType "file" -Value "DONE"
+		displayswitch.exe /clone		
 	}
 	else
 	{

@@ -201,5 +201,5 @@ Kill-Process "armsvc*"
 Kill-Process "AdobeARM*"
 Kill-Service "AdobeARMservice"
 Disable-Service "AdobeARMservice"
-SetDisplayDuplicateForLector
+#SetDisplayDuplicateForLector
 Restart
