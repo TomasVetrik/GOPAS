@@ -28,7 +28,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 {
 	write-host "GOPAS network detected..." -foregroundcolor green
 	
-	Copy-Item "Z:\Custom_OS\Functions.ps1" "D:\"
+	Copy-Item "Z:\Accessories\Functions.ps1" "D:\"
 	
 	. D:\Functions.ps1
 	
