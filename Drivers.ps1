@@ -17,6 +17,10 @@ if($Motherboard -eq $null)
 	$Motherboard = $Global:HWModel
 }
 
+#Vypnutie Automatickeho Instalovania Ovladacov z Windows Update
+write-host "Turn off automatic device driver update..."  -foregroundcolor green
+Set-ItemProperty -Path "HKLM:\Software\\Microsoft\Windows\CurrentVersion\DriverSearching" -Name SearchOrderConfig -Value "0"
+
 $Windows_version=wmic os get name
 $Bit_version=(Get-WMIObject win32_operatingsystem).osarchitecture
 $Network=gwmi Win32_NetworkAdapterConfiguration | select DNSDomain
