@@ -57,8 +57,8 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 			write-host "Copying new drivers from \\$ServerName\Drivers\$OS\$Motherboard\" -foregroundcolor Yellow
 			Copy-With-ProgressBar "Z:\Drivers\$OS\$Motherboard\" $Driverpath
 			write-host "Copying drivers - DONE" -ForegroundColor Green	
-		}		
-	}				
+		}
+	}
 	write-host "Adding drivers to Driverstore" -foregroundcolor Yellow		
 	AddDrivers -Driverpath $Driverpath
 	write-host "All drivers added to Driverstore" -foregroundcolor green
