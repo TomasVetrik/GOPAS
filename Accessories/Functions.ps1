@@ -3944,3 +3944,27 @@ Function Set-Password-By-UserName
 		default { ChangePassword }
 	}
 }
+
+Function Add-KeyboardLanguage($lang)
+{
+	<#
+	.SYNOPSIS
+	Script na pridani vstupniho jazyka klavesnice. Prozatim Win10 only.
+	
+	.DESCRIPTION	
+	Add language input profile.
+	Usage: 
+	Add-KeyboardLanguage("cs-CZ")
+	 
+	.PROFILE EXAMPLES
+	"cs-CZ", "sk-SK", "de-DE", "fr-FR", "ru-RU"
+	and more on https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
+	#>	
+
+    if (![string]::IsNullOrEmpty($lang))
+    {
+        $langList = Get-WinUserLanguageList
+	    $langList.Add($lang)
+	    Set-WinUserLanguageList $langList -Force
+    }
+}
