@@ -31,8 +31,6 @@ function Install_Office_KBs($Path = "")
 			Copy-Item $Path $Path_Temp -Force -Recurse
 		}
 	}
-	$ItemPropertyPath = "HTLM:\SOFTWARE\Policies\Microsoft\Windows\System"
-	Set-ItemProperty -Path $ItemPropertyPath -Name EnableSmartScreen -Value "0" -Type "Dword"  >> $null
 	if(Test-Path $Path_Temp)
 	{
 		$Path = "$Path_Temp\*.exe" 
