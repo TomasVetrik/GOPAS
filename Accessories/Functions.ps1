@@ -1465,6 +1465,7 @@ Function Get-OSAbrivation()
 	{ 
 		"*2012*" {$OS="w2k12_r2"}
 		"*2016*" {$OS="w2k16"}
+		"*2019*" {$OS="w2k19"}
 		"*2008 R2*" {$OS="w2k8_r2"}
 		"*Windows 7*" 
 		{
