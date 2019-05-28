@@ -3969,3 +3969,13 @@ Function Add-KeyboardLanguage($lang)
 	    Set-WinUserLanguageList $langList -Force
     }
 }
+
+function Add-ePrezenceNameResolutionPolicy ($ServerName)
+{
+	switch -wildcard ($ServerName)
+	{
+		"PrahaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.2.0.5"}
+		"BrnoImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.102.0.5"}
+		"BlavaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"}
+	}
+}
