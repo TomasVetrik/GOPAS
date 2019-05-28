@@ -202,4 +202,22 @@ Kill-Process "AdobeARM*"
 Kill-Service "AdobeARMservice"
 Disable-Service "AdobeARMservice"
 #SetDisplayDuplicateForLector
+
+#Nastaveni name resolution policy pro eprezence, at se vzdy dotazuje naseho DNSka
+switch -wildcard ($ServerName)
+{
+	"PrahaImage"
+	{
+		Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.2.0.5"
+	}
+	"BrnoImage"
+	{
+		Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.102.0.5"
+	}
+	"BlavaImage"
+	{
+		Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"
+	}
+}
+
 Restart
