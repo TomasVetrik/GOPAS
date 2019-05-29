@@ -203,7 +203,4 @@ Kill-Service "AdobeARMservice"
 Disable-Service "AdobeARMservice"
 #SetDisplayDuplicateForLector
 
-#Nastaveni name resolution policy pro eprezence, at se vzdy dotazuje naseho DNSka
-Add-ePrezenceNameResolutionPolicy $ServerName
-
 Restart

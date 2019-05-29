@@ -292,3 +292,9 @@ if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
 		CreateNetworkShortcuts
 	}
 }
+
+#Vypnuti force autologon
+if((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon").ForceAutologon -eq 1)
+{
+	Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name ForceAutologon -value 0
+}

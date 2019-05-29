@@ -3893,6 +3893,15 @@ Function Set-ePrezence
 	}
 	#Set-Run -Path "$ePrezencePath\ePrezence.exe" -Name "ePrezence"
 	#Register-ScheduledTask -Xml (get-content 'D:\Temp\ePrezence\ePrezence.xml' | out-string) -TaskName "ePrezence" –Force
+	
+	#Nrpt Rule pro eprezenci. Studenti si ruzne meni DNSky pri kurzu, nepreklada se jim pak eprezence, tohle zajisti, ze se query na eprezence.gopas.cz bude vzdy delat vuci nasim DNS serverum.
+	$ServerName = Get-ServerName
+	switch -wildcard ($ServerName)
+	{
+		"PrahaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.2.0.5"}
+		"BrnoImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.102.0.5"}
+		"BlavaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"}
+	}
 }
 
 Function Get-ServerName()
@@ -3968,14 +3977,4 @@ Function Add-KeyboardLanguage($lang)
 	    $langList.Add($lang)
 	    Set-WinUserLanguageList $langList -Force
     }
-}
-
-function Add-ePrezenceNameResolutionPolicy ($ServerName)
-{
-	switch -wildcard ($ServerName)
-	{
-		"PrahaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.2.0.5"}
-		"BrnoImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.102.0.5"}
-		"BlavaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"}
-	}
 }
