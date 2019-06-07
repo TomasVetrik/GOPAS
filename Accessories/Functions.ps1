@@ -3103,23 +3103,29 @@ Function GhostClientRemove
 	$Pathx86 = "C:\Program Files\Symantec\"
 	$Pathx64 = "C:\Program Files (x86)\Symantec\"
 	$GhostPath = ""
+    GhostControlService-Off
+    GhostClient-Off
+    Kill-Process "ngtray*"
+    Kill-Service "NGCLIENT"
+    Disable-Service "NGCLIENT"
     If(Test-Path $Pathx86)
-	{
+	{    
+		Remove-With-ProgressBar $Pathx86
 		$GhostPath = $Pathx86
 	}
 	Elseif(Test-Path $Pathx64)
 	{
+		Remove-With-ProgressBar $Pathx64
 		$GhostPath = $Pathx64
 	}
 	If(!($GhostPath -eq ""))
-	{
-		Remove-With-ProgressBar $GhostPath
+	{        		
 		Write-Host "Success" -ForeGroundColor Green
 	}
 	Else
 	{		
 		Write-Host "Not found ghost path" -ForeGroundColor Yellow
-	}	
+	}
 }
 
 Function Set-WallPaper($SourcePath)
