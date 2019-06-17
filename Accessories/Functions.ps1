@@ -942,51 +942,51 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
 		[Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)              
 		Start-Sleep -s 5                
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")	    
 	    [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("$Student")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("$Login")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
-		Start-Sleep -s 2
+		Start-Sleep -s 3
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-		Start-Sleep -s 5 
+		Start-Sleep -s 25
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait(" ")
-		Start-Sleep -s 2
+		Start-Sleep -s 5
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")       
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
@@ -994,19 +994,19 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("password")
-		Start-Sleep -s 2
+		Start-Sleep -s 5
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{TAB}")
-		Start-Sleep -s 2                
+		Start-Sleep -s 5                
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait(" ")
-		Start-Sleep -s 2
+		Start-Sleep -s 5
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-		Start-Sleep -s 2
+		Start-Sleep -s 5
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)
 		[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
@@ -1014,7 +1014,7 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
         [void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")        
         [Microsoft.VisualBasic.Interaction]::AppActivate($a.ID)                       
 		[System.Windows.Forms.SendKeys]::SendWait("%{F4}")
-		Start-Sleep -s 2
+		Start-Sleep -s 5
 	}
 	else
 	{
