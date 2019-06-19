@@ -3715,7 +3715,7 @@ Function ResetTime
 Function CHOCO-INSTALL($InstallationName, $Counter = 0)
 {
   write-host "Installing $InstallationName..." -foregroundcolor yellow
-  choco install $InstallationName -y
+  choco install $InstallationName -y --ignore-checksums
   if($? -eq $True)
   {
     "Installation of $InstallationName completed succesfully" | out-file E:\Log.txt -encoding ascii -append
