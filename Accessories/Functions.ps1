@@ -3908,6 +3908,8 @@ Function Set-ePrezence
 		"BrnoImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.102.0.5"}
 		"BlavaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"}
 	}
+	#Whitelist ePrezence ve SmartScreenu
+	Unblock-File -Path "D:\Temp\ePrezence\ePrezence.exe"
 }
 
 Function Get-ServerName()
