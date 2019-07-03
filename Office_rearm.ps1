@@ -38,6 +38,7 @@ function Install_Office_KBs($Path = "")
 		foreach($KBs_File_Path in $KBs_Files)
 		{					
 			$ArgList = "/quiet /norestart"
+			Unblock-File -Path $KBs_File_Path
 			Run $KBs_File_Path $ArgList
 		}	
 		if(Test-Path $Path_Temp)
