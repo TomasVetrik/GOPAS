@@ -28,4 +28,4 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies
 
 #Nastaveni screensaveru - musi byt zde kvuli Multiprofile instalaci (pod uctem StudentEN jinak Screensaver nefunguje)
 write-host "Setting screensaver..." -foregroundcolor green
-regedit /s $ScreenSaverRegistryPath			
+regedit /s $ScreenSaverRegistryPath
