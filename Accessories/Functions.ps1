@@ -3914,7 +3914,7 @@ Function Set-ePrezence
 		"BlavaImage"{Add-DNSClientNRPTRule -NameSpace "eprezence.gopas.cz" -NameServer "10.202.0.5"}
 	}
 	#Whitelist ePrezence ve SmartScreenu
-	Unblock-File -Path "D:\Temp\ePrezence\ePrezence.exe"
+	Unblock-File -Path "$ePrezencePath\ePrezence.exe"
 }
 
 Function Get-ServerName()

@@ -222,25 +222,7 @@ else
 	{
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowRecent -value 0
 		Set-Itemproperty "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -name ShowFrequent -value 0
-	}
-
-	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
-	write-host "All settings applied..." -foregroundcolor green
-	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green
-	Stop-Process -processname Explorer
-	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
-	write-host "Detecting process Explorer.exe..." -foregroundcolor green
-	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name
-	if ($Explorer -like "explorer") 
-	{
-		write-host "Process Explorer.exe detected..." -foregroundcolor green
-	} 
-	else 
-	{
-		write-host "Process Explorer.exe not detected..." -foregroundcolor Yellow
-		write-host "Starting Process Explorer.exe" -foregroundcolor green
-		Start-Process explorer.exe
-	}			   
+	}		   
 	
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Value 0
 	
@@ -272,6 +254,24 @@ else
 			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Blava.ps1"
 		}	
 		default {}
+	}
+	
+	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
+	write-host "All settings applied..." -foregroundcolor green
+	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green
+	Stop-Process -processname Explorer
+	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
+	write-host "Detecting process Explorer.exe..." -foregroundcolor green
+	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name
+	if ($Explorer -like "explorer") 
+	{
+		write-host "Process Explorer.exe detected..." -foregroundcolor green
+	} 
+	else 
+	{
+		write-host "Process Explorer.exe not detected..." -foregroundcolor Yellow
+		write-host "Starting Process Explorer.exe" -foregroundcolor green
+		Start-Process explorer.exe
 	}	
 	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
