@@ -1169,17 +1169,21 @@ Function Run($Path, $ArgList="")
 	 
 	.EXAMPLE
 	Run "C:\Install.exe" '/q /norestart'
-	#>
-	Write-Host "Spustenie $Path..." -ForegroundColor Yellow -NoNewline
-	if($ArgList -eq "")
-	{
-		Start-Process -FilePath $Path -Wait -Verb RunAs
+	#>	
+	if(Test-Path $Path)
+	{		
+		Unblock-File -Path $Path	
+		Write-Host "Spustenie $Path..." -ForegroundColor Yellow -NoNewline
+		if($ArgList -eq "")
+		{
+			Start-Process -FilePath $Path -Wait -Verb RunAs
+		}
+		else
+		{
+			Start-Process -FilePath $Path -ArgumentList $ArgList -Wait -Verb RunAs
+		}	
+		Write-Host -ForegroundColor Green "Success"
 	}
-	else
-	{
-		Start-Process -FilePath $Path -ArgumentList $ArgList -Wait -Verb RunAs
-	}	
-	Write-Host -ForegroundColor Green "Success"
 }
 
 Function Set-Autologon($Setter, $UserName="", $Password='')
@@ -3180,6 +3184,7 @@ Function ChangeBootLink
 	If(Test-Path $TMP)
 	{
 		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" $TMP -Force >> $null
+		Copy-Item "C:\Users\Public\Desktop\Zmenit Bootovanie.lnk" $TMP -Force >> $null
 	}
 }
 
