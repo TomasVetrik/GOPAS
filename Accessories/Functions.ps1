@@ -3184,7 +3184,7 @@ Function ChangeBootLink
 	If(Test-Path $TMP)
 	{
 		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" $TMP -Force >> $null
-		Copy-Item "C:\Users\Public\Desktop\Zmenit Bootovanie.lnk" $TMP -Force >> $null
+		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" "C:\Users\Public\Desktop\Zmenit Bootovanie.lnk" -Force >> $null
 	}
 }
 
