@@ -3184,7 +3184,44 @@ Function ChangeBootLink
 	If(Test-Path $TMP)
 	{
 		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" $TMP -Force >> $null
-		Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" "C:\Users\Public\Desktop\Zmenit Bootovanie.lnk" -Force >> $null
+	    $Descs = New-Object System.Collections.ArrayList
+		$IDs = New-Object System.Collections.ArrayList
+		$Objects = bcdedit /enum
+		#***************************************
+		# Algoritmus na zistenie ID, podla ktoreho sa zmeni bootovanie
+		foreach($Object in $Objects)
+		{
+			If($Object -like "description*")
+			{		
+				$Descs.Add($Object.replace("description             ",'')) >> $Null
+			}
+				
+			If($Object -like "identifier*")
+			{
+				$Object = $Object.replace(' ','')
+				$Object = $Object.replace("identifier",'')
+				$IDs.Add($Object) >> $Null
+			}
+			ElseIf($Object -like "identifikátor*")
+			{
+				$Object = $Object.replace(' ','')
+				$Object = $Object.replace("identifikátor",'')
+				$IDs.Add($Object) >> $Null
+			}
+		}
+		$pocet=0
+		foreach($Description in $Descs)
+		{
+			If(!($Description -eq "Rebuild Classroom") -and !($Description -eq "Windows Boot Manager") -and !($Description -eq "GDS Initialize"))
+			{
+				$pocet += 1
+			}
+		}
+		if($pocet -gt 1)
+		{		
+			Copy-Item "$Temp\BootOS\Zmenit Bootovanie.lnk" "C:\Users\Public\Desktop\Zmenit Bootovanie.lnk" -Force >> $null
+			SetRunAsAdmin "$Temp\BootOS\Zmenit Bootovanie.lnk"
+		}
 	}
 }
 
