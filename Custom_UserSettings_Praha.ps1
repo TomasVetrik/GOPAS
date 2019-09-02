@@ -17,7 +17,7 @@ switch($VideoController.CurrentHorizontalResolution)
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_2560x1080.png"
 		$ScreenSaverRegistryPath = "C:\Program Files\Screensaver\screensaver2560x1080.reg"	
 	}
-	"1920"
+	{@("1920", "1650", "1366", "1280")}
 	{
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_1920x1080.bmp"
 		$ScreenSaverRegistryPath = "C:\Program Files\Screensaver\screensaver1920x1080.reg"	
