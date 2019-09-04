@@ -34,7 +34,7 @@ regedit /s $ScreenSaverRegistryPath
 #Mapovani plochy prezentacniho computeru v ucebne B921#
 #######################################################
 
-$physicalAddresses = (get-wmiobject win32_networkadapter -Filter "AdapterType LIKE 'Ethernet 802.3'") | select -expand macaddress
+$physicalAddresses = Get-WmiObject win32_networkadapterconfiguration | select -ExpandProperty macaddress
 
 #Musi byt zmeneno pri zmene hardwaru
 $physicalAddressLector = '00:0E:0C:C5:E5:AE'
@@ -64,6 +64,6 @@ if ($physicalAddresses.Contains($physicalAddressLector))
 
     $WshShell = New-Object -comObject WScript.Shell
     $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Prezentace.lnk")
-    $Shortcut.TargetPath = "L:\Prezentace"
+    $Shortcut.TargetPath = "\\192.168.0.2\C$\Users\Student\Desktop\Prezentace"
     $Shortcut.Save()
 }
