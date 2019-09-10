@@ -71,10 +71,8 @@ else
 	$Bit_version="x64"
 }
 
-Install-Choco-From-Local-Server
-CHOCO-INSTALL "vscode"
-CHOCO-INSTALL "azure-cli"
-CHOCO-INSTALL "silverlight"
+$SilverLightName = "D:\Temp\Silverlight_"+$Bit_version+".exe"
+Run $SilverLightName "/q"
 
 $MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
 
