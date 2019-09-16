@@ -14,7 +14,12 @@ $ServerName = ""
 
 . D:\Functions.ps1
 
+Kill-Process "ngtray*"
+Kill-Service "NGCLIENT"
+Disable-Service "NGCLIENT"
 GhostClientRemove
+Kill-Service "wuauserv"
+Disable-Service "wuauserv"
 
 Function Drivers-Add
 {
@@ -92,8 +97,6 @@ Function No_GOPAS_Network
 	write-host "Using older settings from D:\Custom_OS.ps1..." -foregroundcolor green
 	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Custom_OS.ps1"
 }
-
-MouseClick(0,0)
 
 # Instalace ovladacu k sitovkam, ktere Windows nativne neznaji
 Drivers-Add
