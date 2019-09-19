@@ -242,6 +242,10 @@ else
 		write-host "STUDENT PC detected leaving display settings alone" -foregroundcolor green
 	}	Start-Service WinRM | Out-Null	Set-Service WinRM -StartupType Automatic| Out-Null	winrm create winrm/config/Listener?Address=*+Transport=HTTP 2>null | Out-Null
 	
+	#Disablovani WUDO
+	New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" >> $null
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Value "0" -PropertyType DWord -force >> $null
+	
 	#Vytvoreni kontrolni souboru, zda jsou nastaveni aplikovana
 	$TempContent = Get-Content $UserSettings
 	if(Test-Path $Settings_applied)

@@ -48,7 +48,8 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		Disable-Service "AdobeARMservice"
 		Kill-Process "Ank_Service"
 		Kill-Process "AnK"
-		Kill-Process "ePrezence"		
+		Kill-Process "ePrezence"
+		Kill-Process "OfficeClickToRun"
 		
 		Start-Sleep 5
 		
