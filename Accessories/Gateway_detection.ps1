@@ -14,12 +14,38 @@ $ServerName = ""
 
 . D:\Functions.ps1
 
+New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" >> $null
+New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Value "0" -PropertyType DWord -force >> $null
+
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Office\ClickToRun\Configuration" -Name UpdatesEnabled -Value "False"
+
+& SCHTASKS /Change /DISABLE /TN "Adobe Acrobat Update Task"
+Get-ScheduledTask | where { $_.TaskName -like "Adobe*" } | Disable-ScheduledTask
+Get-ScheduledTask | where { $_.TaskName -like "onedrive*" } | Disable-ScheduledTask
+Get-ScheduledTask | where { $_.TaskName -like "*scheduled Start*" } | Disable-ScheduledTask
+Get-ScheduledTask | where { $_.TaskName -like "*Office *" } | Disable-ScheduledTask
+Kill-Process "OfficeClickToRun"
+Kill-Service "ClickToRunSvc"
+Get-AppxPackage "*windowsstore*" | Remove-AppxPackage
+Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage
 Kill-Process "ngtray*"
 Kill-Service "NGCLIENT"
 Disable-Service "NGCLIENT"
+Disable-Service "AdobeARMservice"
+Kill-Process "armsvc*"
+Kill-Process "AdobeARM*"
+Kill-Service "AdobeARMservice"
+Disable-Service "AdobeARMservice"
 GhostClientRemove
+Kill-Process "wuauserv*"
+Kill-Process "bits*"
+Kill-Process "dosvc*"
 Kill-Service "wuauserv"
+Kill-Service "bits"
+Kill-Service "dosvc"
 Disable-Service "wuauserv"
+Disable-Service "bits"
+Disable-Service "dosvc"
 
 Function Drivers-Add
 {
