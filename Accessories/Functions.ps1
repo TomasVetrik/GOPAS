@@ -1,4 +1,5 @@
-﻿$ErrorActionPreference = "SilentlyContinue"
+﻿set-executionpolicy ByPass
+$ErrorActionPreference = "SilentlyContinue"
 $ScreenWidth = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenWidth
 if($ScreenWidth -is [array])
 {
@@ -4075,4 +4076,43 @@ Function Add-KeyboardLanguage($lang)
 	    $langList.Add($lang)
 	    Set-WinUserLanguageList $langList -Force
     }
+}
+
+Function DeleteBadBCDRecord
+{
+	$Descs = New-Object System.Collections.ArrayList
+    $IDs = New-Object System.Collections.ArrayList
+    $Objects = bcdedit /enum
+    
+    #***************************************
+    # Algoritmus na zistenie ID zaznamov
+    foreach($Object in $Objects)
+    {
+	    If($Object -like "description*")
+	    {		
+		    $Descs.Add($Object.replace("description             ",'')) >> $Null
+	    }
+			
+	    If($Object -like "identifier*")
+	    {
+		    $Object = $Object.replace(' ','')
+		    $Object = $Object.replace("identifier",'')
+		    $IDs.Add($Object) >> $Null
+	    }
+	    ElseIf($Object -like "identifikátor*")
+	    {
+		    $Object = $Object.replace(' ','')
+		    $Object = $Object.replace("identifikátor",'')
+		    $IDs.Add($Object) >> $Null
+	    }
+    }
+	$pocet=0
+	foreach($Description in $Descs)
+    {
+	    If(($Description -eq "Rebuild Classroom") -or ($Description -eq "GDS Initialize"))
+	    {
+			bcdedit /delete $IDs[$pocet] /cleanup
+		}
+		$pocet+=1
+	}	
 }
