@@ -255,7 +255,9 @@ else
 		}	
 		default {}
 	}
-	
+
+	SetFontScaling
+
 	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
 	write-host "All settings applied..." -foregroundcolor green
 	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green

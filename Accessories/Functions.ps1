@@ -4116,3 +4116,41 @@ Function DeleteBadBCDRecord
 		$pocet+=1
 	}	
 }
+
+Function SetFontScaling
+{
+	$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\Connectivity"    
+	Foreach($registryFolder in $registryFolders)
+	{
+		if($registryFolder.PSChildName -like "*^*")
+		{
+			$RegistryChildName = $registryFolder.PSChildName 
+			$ContentOfRegistry = (Get-Content -Path D:\Temp\SetFontScalingWindows_Template2.reg).Replace("ID_WITH_HASH", $RegistryChildName)
+			Set-Content -Path D:\Temp\SetFontScalingWindows.reg -Value $ContentOfRegistry
+			Write-Host "Importing registry..." -ForegroundColor Yellow -NoNewLine
+			& reg import D:\Temp\SetFontScalingWindows.reg 2>null | Out-Null
+			Write-Host "Success" -ForegroundColor Green
+		}
+	}
+	$registryFoldersUsersID = Get-ChildItem Registry::HKEY_USERS\
+	Foreach($registryFolderUserID in $registryFoldersUsersID)
+	{
+		if($registryFolderUserID.PSChildName -like "S-1*")
+		{
+			$RegistryChildNameUser = $registryFolderUserID.PSChildName 
+			$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\Connectivity"    
+			Foreach($registryFolder in $registryFolders)
+			{
+				if($registryFolder.PSChildName -like "*^*")
+				{
+					$RegistryChildName = $registryFolder.PSChildName 
+					$ContentOfRegistry = (Get-Content -Path D:\Temp\SetFontScalingWindows_Template.reg).Replace("S-1", $RegistryChildNameUser).Replace("ID_WITH_HASH", $RegistryChildName)
+					Set-Content -Path D:\Temp\SetFontScalingWindows.reg -Value $ContentOfRegistry
+					Write-Host "Importing registry..." -ForegroundColor Yellow -NoNewLine
+					& reg import D:\Temp\SetFontScalingWindows.reg 2>null | Out-Null
+					Write-Host "Success" -ForegroundColor Green
+				}
+			}	
+		}
+	}	
+}
