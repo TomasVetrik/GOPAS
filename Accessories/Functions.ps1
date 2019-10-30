@@ -4119,7 +4119,7 @@ Function DeleteBadBCDRecord
 
 Function SetFontScaling
 {
-	$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\Connectivity"    
+	$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\ScaleFactors"    
 	Foreach($registryFolder in $registryFolders)
 	{
 		if($registryFolder.PSChildName -like "*^*")
@@ -4138,7 +4138,7 @@ Function SetFontScaling
 		if($registryFolderUserID.PSChildName -like "S-1*")
 		{
 			$RegistryChildNameUser = $registryFolderUserID.PSChildName 
-			$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\Connectivity"    
+			$registryFolders = Get-ChildItem "HKLM:\System\CurrentControlSet\Control\GraphicsDrivers\ScaleFactors"    
 			Foreach($registryFolder in $registryFolders)
 			{
 				if($registryFolder.PSChildName -like "*^*")
