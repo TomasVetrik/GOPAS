@@ -107,6 +107,17 @@ Function GeneralRebuild($vhd)
 					Write-host "Differencing disk for"$vhd"succesfully created..." -foregroundcolor green
 					Write-Host ""
 				}
+				else
+				{
+					if(!(Test-Path -path $path_diff))
+					{
+						$diskpartskript = @"
+							create vdisk file=$path_diff parent $path_base
+							exit
+"@
+						$diskpartskript | diskpart
+					}
+				}
 				bcdedit /set '{default}' device vhd=$path_diff_bcd
 				bcdedit /set '{default}' osdevice vhd=$path_diff_bcd
 				bcdedit /set '{default}' description "$vhd"
