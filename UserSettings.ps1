@@ -241,17 +241,17 @@ else
 		"PrahaImage" 
 		{
 			write-host "Run Custom Scripts for Praha" -foregroundcolor Yellow
-			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Praha.ps1"
+			. "D:\Temp\Custom_UserSettings_Praha.ps1"
 		}
 		"BrnoImage" 
 		{
 			write-host "Run Custom Scripts for Brno" -foregroundcolor Yellow
-			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Brno.ps1"
+			. "D:\Temp\Custom_UserSettings_Brno.ps1"
 		}
 		"BlavaImage" 
 		{
 			write-host "Run Custom Scripts for Bratislava" -foregroundcolor Yellow
-			C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_UserSettings_Blava.ps1"
+			. "D:\Temp\Custom_UserSettings_Blava.ps1"
 		}	
 		default {}
 	}
@@ -286,14 +286,7 @@ else
 }
 
 #Vytvoreni odkazu na ostatni PC v ucebne
-$DesktopPath = (get-itemproperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders").Desktop
-if(!(Test-Path -path C:\Users\$env:username\$DesktopPath\Shares))
-{
-	if(($env:computername -like "*STUDENT*") -or ($env:computername -like "*LEKTOR*"))
-	{
-		CreateNetworkShortcuts
-	}
-}
+CreateNetworkShortcuts_New
 
 #Vypnuti force autologon
 if((Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon").ForceAutologon -eq 1)

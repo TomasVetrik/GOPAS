@@ -49,7 +49,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 		Kill-Process "Ank_Service"
 		Kill-Process "AnK"
 		Kill-Process "ePrezence"
-		Kill-Process "OfficeClickToRun"
+		Kill-Process "OfficeClickToRun"		
 		
 		Start-Sleep 5
 		
@@ -68,7 +68,7 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	{		
 		#Spusteni skriptu Custom_OS.ps1
 		write-host "Executing Custom_OS.ps1..." -foregroundcolor green
-		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Custom_OS.ps1"
+		. "D:\Custom_OS.ps1"
 	}
 }
 else
@@ -96,26 +96,26 @@ AddCert
 #Aplikovani nastaveni pro prazskou pobocku (Mapovani sitoveho disku, instalace ovladacu, prejmenovani pocitace, nastaveni powerscheme)
 write-host ""
 write-host "Executing $Temp\Drivers.ps1..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Drivers.ps1" -verb runas
+. "$Temp\Drivers.ps1" -verb runas
 write-host ""
 write-host "Executing $Temp\Rename.ps1..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Rename.ps1" -verb runas
+. "$Temp\Rename.ps1" -verb runas
 Write-Host ""
 Set-WOL
 write-host ""
 write-host "Rearming Office and installing KBs..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\Office_rearm.ps1" -verb runas
+. "$Temp\Office_rearm.ps1" -verb runas
 write-host ""
 write-host "Setting Global Settings..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GlobalSettings.ps1" -verb runas
+. "$Temp\GlobalSettings.ps1" -verb runas
 write-host ""
 write-host "Setting User Settings..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\UserSettings.ps1" -verb runas
+. "$Temp\UserSettings.ps1" -verb runas
 write-host ""
 write-host "Starting GDS Postinstall phase..." -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
 Set-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run -Name "Prepare_UserSettings" -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell -windowstyle hidden $Temp\Prepare_UserSettings.ps1"
 write-host "Registering Gopas Client Service" -foregroundcolor Yellow
-C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\GDSClient\GDSClient_Create_Service.ps1"
+. "$Temp\GDSClient\GDSClient_Create_Service.ps1"
 
 Write-Host ""
 #Odpojeni sitovych disku, ktere v ramci procesu pouzivany, odpojeni registru defaultniho profilu, vypnuti automatickeho prihlasovani
@@ -167,17 +167,17 @@ switch -wildcard ($ServerName)
     "PrahaImage" 
 	{
 		write-host "Run Custom Scripts for Praha" -foregroundcolor Yellow
-		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Praha.ps1"
+		. "D:\Temp\Custom_Praha.ps1"
 	}
  	"BrnoImage" 
 	{
 		write-host "Run Custom Scripts for Brno" -foregroundcolor Yellow
-		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Brno.ps1"
+		. "D:\Temp\Custom_Brno.ps1"
 	}
     "BlavaImage" 
 	{
 		write-host "Run Custom Scripts for Bratislava" -foregroundcolor Yellow
-		C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "D:\Temp\Custom_Blava.ps1"
+		. "D:\Temp\Custom_Blava.ps1"
 	}	
     default {}
 }
@@ -196,12 +196,14 @@ if (($Network -like "*gopas*") -or ($Network -like "*skola*"))
 	TimeSynch -ServerName $ServerName	
 	write-host ""
 	write-host "Installing PostInstalls" -foreground $Global:UserInputColor -BackgroundColor $Global:bgColor
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell -file "$Temp\InstallFromImage_With_Destination.ps1"
+	. "$Temp\InstallFromImage_With_Destination.ps1"
 }
 Kill-Process "armsvc*"
 Kill-Process "AdobeARM*"
 Kill-Service "AdobeARMservice"
 Disable-Service "AdobeARMservice"
+Get-ScheduledTask | where { $_.TaskName -like "Adobe*" } | Disable-ScheduledTask
 #SetDisplayDuplicateForLector
-
+DeleteBadBCDRecord
+SaveComputersInfos
 Restart

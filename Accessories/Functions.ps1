@@ -3794,6 +3794,47 @@ Function CreateNetworkShortcuts
 	}	
 }
 
+Function SaveComputersInfos
+{	
+    $MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+    $ComputerFileName =  GetComputerNameFromServerByMacXML -Mac $MacAddress	
+    New-Item "D:\Temp\Computers" -itemtype directory 
+	if(Test-Path $ComputerFileName)
+    {        
+        $GDSClassRoomPath = Split-Path -Path $ComputerFileName
+        if(Test-Path $GDSClassRoomPath)
+		{            
+			Copy-Directory -pathFrom $GDSClassRoomPath -pathTo "D:\Temp\Computers"
+        }                	    
+    }
+}
+
+Function CreateNetworkShortcuts_New
+{
+	#Vytvoreni odkazu na ostatni PC v ucebne	    
+    $SharesFolder = "C:\Users\Public\Desktop\Shares"
+    if(!(Test-Path $SharesFolder))
+    {
+	    New-Item $SharesFolder -itemtype directory	    
+        $GDSClassRoomPath = "D:\Temp\Computers"
+        $WshShell = New-Object -comObject WScript.Shell
+        if(Test-Path $GDSClassRoomPath)
+	    {
+		    $Files = Get-ChildItem $GDSClassRoomPath -recurse -filter "*.my"			
+		    foreach($File in $Files)
+		    {	
+			    [xml]$XMLConfigFile = Get-Content $File.FullName	            		                        
+                $ComputerName = $XMLConfigFile.ComputerDetailsData.Name
+	            $ComputerShareIP = "\\"+$XMLConfigFile.ComputerDetailsData.IPAddress
+		
+	            $Shortcut = $WshShell.CreateShortcut("$SharesFolder\$ComputerName.lnk")
+	            $Shortcut.TargetPath = "$ComputerShareIP"
+	            $Shortcut.Save()
+            }
+        }    
+    }
+}
+
 Function ResetTime 
 {
 	#Pokud v image nesedi cas, kvuli zimnimu a letnimu presunu, toto to opravi
