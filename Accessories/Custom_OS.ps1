@@ -186,6 +186,7 @@ write-host ""
 
 write-host "Resetting time..." -foregroundcolor green
 ResetTime
+SaveComputersInfos
 
 $wshell = new-object -comobject wscript.shell -erroraction stop		
 if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
@@ -205,5 +206,4 @@ Disable-Service "AdobeARMservice"
 Get-ScheduledTask | where { $_.TaskName -like "Adobe*" } | Disable-ScheduledTask
 #SetDisplayDuplicateForLector
 DeleteBadBCDRecord
-SaveComputersInfos
 Restart

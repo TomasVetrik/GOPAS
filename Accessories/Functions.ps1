@@ -3816,23 +3816,25 @@ Function CreateNetworkShortcuts_New
     if(!(Test-Path $SharesFolder))
     {
 	    New-Item $SharesFolder -itemtype directory	    
-        $GDSClassRoomPath = "D:\Temp\Computers"
-        $WshShell = New-Object -comObject WScript.Shell
-        if(Test-Path $GDSClassRoomPath)
-	    {
-		    $Files = Get-ChildItem $GDSClassRoomPath -recurse -filter "*.my"			
-		    foreach($File in $Files)
-		    {	
-			    [xml]$XMLConfigFile = Get-Content $File.FullName	            		                        
-                $ComputerName = $XMLConfigFile.ComputerDetailsData.Name
-	            $ComputerShareIP = "\\"+$XMLConfigFile.ComputerDetailsData.IPAddress
-		
+    }
+    $GDSClassRoomPath = "D:\Temp\Computers"
+    $WshShell = New-Object -comObject WScript.Shell
+    if(Test-Path $GDSClassRoomPath)
+	{
+		$Files = Get-ChildItem $GDSClassRoomPath -recurse -filter "*.my"			
+		foreach($File in $Files)
+		{	
+			[xml]$XMLConfigFile = Get-Content $File.FullName	            		                        
+            $ComputerName = $XMLConfigFile.ComputerDetailsData.Name
+	        $ComputerShareIP = "\\"+$XMLConfigFile.ComputerDetailsData.IPAddress		    
+            if(!(Test-Path "$SharesFolder\$ComputerName.lnk"))
+            {
 	            $Shortcut = $WshShell.CreateShortcut("$SharesFolder\$ComputerName.lnk")
 	            $Shortcut.TargetPath = "$ComputerShareIP"
 	            $Shortcut.Save()
             }
-        }    
-    }
+        }
+    }        
 }
 
 Function ResetTime 
