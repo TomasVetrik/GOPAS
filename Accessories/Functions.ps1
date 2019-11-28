@@ -3373,7 +3373,7 @@ Function CheckNotebookPassword()
 		$ConfigFile = Get-Content $ConfigPath
 		$ConfigSplitter = $ConfigFile.split(',')
 		$PCName = $ConfigSplitter[0]
-		if($PCName -like "Dell*" -or $PCName -like "STUDENTSK5*")
+		if($PCName -like "Dell*")
 		{
 			ChangePassword
 		}
