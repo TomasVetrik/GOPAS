@@ -2384,6 +2384,8 @@ Function GhostControlService-Off
 Function MouseClick($dx, $dy)
 {
 	Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern void mouse_event(int flags, int dx, int dy, int cButtons, int info);' -Name U32 -Namespace W;		
+    [system.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | out-null
+    [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($dx,$dy)
 	[W.U32]::mouse_event(6,$dx,$dy,0,0);
 }
 

@@ -16,6 +16,14 @@ Set-ExecutionPolicy Bypass
 
 . D:\Functions.ps1
 
+Import-Module "D:\Temp\SetConsoleFont.ps1"
+Set-ConsoleFont 10
+
+(Get-Process -Name cmd).MainWindowHandle | foreach { Set-WindowStyle MAXIMIZE $_ }
+
+#na fullku
+Mode $BufferWidth
+
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name NoAutoUpdate -Value 1
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name AUOptions -Value 4
 Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name ScheduledInstallTime -Value 23

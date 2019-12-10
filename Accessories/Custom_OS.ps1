@@ -77,14 +77,6 @@ else
 	write-host "Applying settings based on latest branch detected..." -foregroundcolor green
 }
 
-Import-Module "D:\Temp\SetConsoleFont.ps1"
-Set-ConsoleFont 10
-
-(Get-Process -Name cmd).MainWindowHandle | foreach { Set-WindowStyle MAXIMIZE $_ }
-
-#na fullku
-Mode $BufferWidth
-
 #Vypise podrobnosti o pocitaci
 Write-Header
 
