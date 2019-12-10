@@ -12,8 +12,14 @@
 $Driverpath = "D:\Temp\Drivers\*\Net\"
 $ServerName = ""
 
+Set-ExecutionPolicy Bypass
+
 . D:\Functions.ps1
 
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name NoAutoUpdate -Value 1
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name AUOptions -Value 4
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name ScheduledInstallTime -Value 23
+Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name ScheduledInstallDay -Value 7
 New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" >> $null
 New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeliveryOptimization" -Name "DODownloadMode" -Value "0" -PropertyType DWord -force >> $null
 
@@ -26,6 +32,7 @@ Get-ScheduledTask | where { $_.TaskName -like "*scheduled Start*" } | Disable-Sc
 Get-ScheduledTask | where { $_.TaskName -like "*Office *" } | Disable-ScheduledTask
 Kill-Process "OfficeClickToRun"
 Kill-Service "ClickToRunSvc"
+#Disable-Service "ClickToRunSvc"
 Get-AppxPackage "*windowsstore*" | Remove-AppxPackage
 Get-AppxPackage Microsoft.XboxApp | Remove-AppxPackage
 Kill-Process "ngtray*"

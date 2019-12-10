@@ -82,7 +82,6 @@ param(
 }
 
 Set-QuickEdit -DisableQuickEdit
-set-executionpolicy ByPass
 $ErrorActionPreference = "SilentlyContinue"
 $ScreenWidth = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenWidth
 if($ScreenWidth -is [array])
