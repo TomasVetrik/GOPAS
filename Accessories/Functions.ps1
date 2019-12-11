@@ -1,4 +1,5 @@
-﻿$QuickEditCodeSnippet=@" 
+﻿$ErrorActionPreference = "SilentlyContinue"
+$QuickEditCodeSnippet=@" 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,6 @@ param(
 }
 
 Set-QuickEdit -DisableQuickEdit
-$ErrorActionPreference = "SilentlyContinue"
 $ScreenWidth = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenWidth
 if($ScreenWidth -is [array])
 {
@@ -2380,13 +2380,27 @@ Function GhostControlService-Off
 		Write-Host "GhostClientControll service not detected..." -ForegroundColor Yellow
 	}
 }
+function Click-MouseButton
+{
+    $signature=@' 
+      [DllImport("user32.dll",CharSet=CharSet.Auto, CallingConvention=CallingConvention.StdCall)]
+      public static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+'@ 
+    $SendMouseClick = Add-Type -memberDefinition $signature -name "Win32MouseEventNew" -namespace Win32Functions -passThru 
+    $SendMouseClick::mouse_event(0x00000002, 0, 0, 0, 0);
+    $SendMouseClick::mouse_event(0x00000004, 0, 0, 0, 0);
+}
+
+Click-MouseButton
 
 Function MouseClick($dx, $dy)
 {
-	Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern void mouse_event(int flags, int dx, int dy, int cButtons, int info);' -Name U32 -Namespace W;		
     [system.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | out-null
+    [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point(100,100)
     [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point($dx,$dy)
-	[W.U32]::mouse_event(6,$dx,$dy,0,0);
+	#Add-Type -MemberDefinition '[DllImport("user32.dll")] public static extern void mouse_event(int flags, int dx, int dy, int cButtons, int info);' -Name U32 -Namespace W;		
+	#[W.U32]::mouse_event(6,$dx,$dy,0,0);
+	Click-MouseButton
 }
 
 Function RepairACandExplorer
