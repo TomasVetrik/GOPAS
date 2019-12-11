@@ -2397,17 +2397,7 @@ Function RepairACandExplorer
 	Kill-Process Explorer
 	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true	
 	Start-Process explorer.exe	
-	Start-Sleep -Seconds 10
-	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
-	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
-	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
-	[System.Windows.Forms.SendKeys]::SendWait("{DOWN}")
-	Start-Sleep -Seconds 2	
-	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
-	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
-	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
-	[System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-	Start-Sleep -Seconds 2	
+	Start-Sleep -Seconds 10	
 	[void] [System.Reflection.Assembly]::LoadWithPartialName("'Microsoft.VisualBasic")
 	[Microsoft.VisualBasic.Interaction]::AppActivate("explorer.exe")
 	[void] [System.Reflection.Assembly]::LoadWithPartialName("'System.Windows.Forms")		
