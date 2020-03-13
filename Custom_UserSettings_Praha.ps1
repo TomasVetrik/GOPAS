@@ -30,40 +30,6 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies
 write-host "Setting screensaver..." -foregroundcolor green
 regedit /s $ScreenSaverRegistryPath
 
-#######################################################
-#Mapovani plochy prezentacniho computeru v ucebne B921#
-#######################################################
-
-$physicalAddresses = Get-WmiObject win32_networkadapterconfiguration | select -ExpandProperty macaddress
-
-#Musi byt zmeneno pri zmene hardwaru
-$physicalAddressLector = '00:0E:0C:C5:E5:AE'
-
-if ($physicalAddresses.Contains($physicalAddressLector))
-{
-    $interfaceAlias = Get-NetAdapterHardwareInfo | Where Bus -eq 0 | Select-Object -ExpandProperty Name
-
-    Write-Host "Setting IP address of the OnBoard NIC to 192.168.0.1 ..." -foregroundcolor green
-
-    New-NetIPAddress -InterfaceAlias $interfaceAlias -IPAddress "192.168.0.1" -PrefixLength 24
-
-    Sleep -s 5
-
-    Write-Host "Mapping Desktop of MiniPC ..." -foregroundcolor green
-
-    cmdkey /add:192.168.0.2 /user:'Student' /pass:'Pa$$w0rd'
-
-    New-SmbMapping -LocalPath L: -RemotePath '\\192.168.0.2\C$\Users\Student\Desktop' -UserName 'Student' -Password 'Pa$$w0rd' -Persistent:1
-    
-    if(!(Test-Path L:\Prezentace))
-    {
-        New-Item -Path L:\Prezentace -ItemType directory
-    }
-
-    Write-Host "Creating Desktop shortcut for the network drive ..." -foregroundcolor green
-
-    $WshShell = New-Object -comObject WScript.Shell
-    $Shortcut = $WshShell.CreateShortcut("$Home\Desktop\Prezentace.lnk")
-    $Shortcut.TargetPath = "\\192.168.0.2\C$\Users\Student\Desktop\Prezentace"
-    $Shortcut.Save()
-}
+#Disable shutdown button in start menu
+New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -PropertyType DWORD -Name "NoClose" -Value 1 -Force
