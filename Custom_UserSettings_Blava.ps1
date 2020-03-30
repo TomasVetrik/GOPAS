@@ -3,6 +3,10 @@ $Temp="D:\Temp"
 
 . D:\Functions.ps1
 
+SaveComputersInfos
+
+CreateRDPShorctus
+
 switch -wildcard ($env:USERNAME) 
 { 
     "StudentEN" {$Arguments = 'intl.cpl,,/f:"D:\temp\Config_EN.xml"'}

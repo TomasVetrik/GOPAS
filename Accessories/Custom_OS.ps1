@@ -178,7 +178,6 @@ write-host ""
 
 write-host "Resetting time..." -foregroundcolor green
 ResetTime
-SaveComputersInfos
 
 $wshell = new-object -comobject wscript.shell -erroraction stop		
 if (Test-Path -path $Temp\Password.txt) {Remove-Item $Temp\Password.txt -Force}	
