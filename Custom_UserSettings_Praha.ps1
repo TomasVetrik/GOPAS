@@ -3,6 +3,10 @@ $Temp="D:\Temp"
 
 . D:\Functions.ps1
 
+SaveComputersInfos
+
+CreateRDPShorctus
+
 write-host "Changing home page and setting homepage to www.gopas.cz" -ForegroundColor Green
 Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main" -Name 'Start Page' -Value "http://www.gopas.cz"
  
@@ -33,3 +37,4 @@ regedit /s $ScreenSaverRegistryPath
 #Disable shutdown button in start menu
 New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -PropertyType DWORD -Name "NoClose" -Value 1 -Force
+

@@ -4334,3 +4334,46 @@ Function DisableCloseButton()
     Add-Type $CloseButton
     [CloseButtonToggle.Status]::Disable()
 }
+
+Function CreateShadowRDPFromXML ($TargetXML)
+{
+	New-Item C:\Users\$env:username\Desktop\ShadowRDPShortcuts -itemtype Directory -Force
+	New-Item D:\Temp\ShadowRDP -itemtype Directory -Force
+		Get-childitem D:\Temp\Computers\$TargetXML | %{
+			[xml]$XMLFile = Get-Content $_.FullName
+			$Name = $XMLFile.ComputerDetailsData.Name
+			$IPAddress = $XMLFile.ComputerDetailsData.IPAddress
+			if($TargetXML -like "STUDENT*my")
+			{
+				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /control /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
+			}
+			else
+			{
+				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
+			}
+			
+			$WshShell = New-Object -comObject WScript.Shell
+			$Shortcut = $WshShell.CreateShortcut("C:\Users\$env:username\Desktop\ShadowRDPShortcuts\$Name" + "_ShadowRDP.lnk")
+			$Shortcut.TargetPath = "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe"
+			$Shortcut.Arguments = ("-File D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1")
+			$Shortcut.IconLocation = "D:\Temp\mstsc.ico"
+			$Shortcut.Save()
+		}
+}
+
+Function CreateShadowRDPShortcuts
+{
+	#Enablovani Shadow RDP
+	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v Shadow /d 2 /t REG_DWORD /f 
+	
+	$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+	$LektorMacAddress = (Get-childitem D:\Temp\Computers\*LEKTOR*my -recurse | %{[xml]($XMLMacaddress = Get-Content $_.FullName)}).ComputerDetailsData.Macaddress
+	if($MacAddress -eq $LektorMacAddress)
+	{
+		CreateShadowRDPFromXML "STUDENT*my"
+	}
+	else
+	{
+		CreateShadowRDPFromXML "LEKTOR*my"
+	}
+}
