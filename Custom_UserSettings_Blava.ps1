@@ -5,7 +5,7 @@ $Temp="D:\Temp"
 
 SaveComputersInfos
 
-CreateRDPShorctus
+CreateShadowRDPShortcuts
 
 switch -wildcard ($env:USERNAME) 
 { 
