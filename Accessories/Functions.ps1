@@ -3818,13 +3818,15 @@ Function GetComputerNameFromServerByMac($Mac)
 	return $ComputerName
 }
 
-Function GetComputerNameFromServerByMacXML($Mac)
+Function GetComputerNameFromServerByMacXML($Mac, $MachineGroupPath="W:\Deployment\GDS Server\Machine Groups")
 {
 	$ComputerName = ""
 	if($Mac -ne "")
 	{
-		DetectMapNetworkShares
-		$MachineGroupPath = "W:\Deployment\GDS Server\Machine Groups"
+		if($MachineGroupPath -like "W:*")
+		{
+			DetectMapNetworkShares		
+		}
 		if(Test-Path $MachineGroupPath)
 		{
 			$Files = Get-ChildItem $MachineGroupPath -recurse -filter "*.my"			
@@ -3844,7 +3846,6 @@ Function GetComputerNameFromServerByMacXML($Mac)
 	}
 	return $ComputerName
 }
-
 
 Function AddCert
 {
@@ -3904,7 +3905,7 @@ Function CreateNetworkShortcuts
 	$WshShell = New-Object -comObject WScript.Shell
 	$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTOR$($Classroom).lnk")
 	$Shortcut.TargetPath = "\\LEKTOR$($Classroom)"
-	$Shortcut.Save()
+	$Shortcut.SaveSave()
 	
 	$Student = 1
 	$Count = 1
@@ -4337,7 +4338,7 @@ Function DisableCloseButton()
 
 Function CreateShadowRDPFromXML ($TargetXML)
 {
-	New-Item C:\Users\$env:username\Desktop\ShadowRDPShortcuts -itemtype Directory -Force
+	New-Item C:\Users\Public\Desktop\ShadowRDPShortcuts -itemtype Directory -Force
 	New-Item D:\Temp\ShadowRDP -itemtype Directory -Force
 		Get-childitem D:\Temp\Computers\$TargetXML | %{
 			[xml]$XMLFile = Get-Content $_.FullName
@@ -4353,7 +4354,7 @@ Function CreateShadowRDPFromXML ($TargetXML)
 			}
 			
 			$WshShell = New-Object -comObject WScript.Shell
-			$Shortcut = $WshShell.CreateShortcut("C:\Users\$env:username\Desktop\ShadowRDPShortcuts\$Name" + "_ShadowRDP.lnk")
+			$Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\ShadowRDPShortcuts\$Name" + "_ShadowRDP.lnk")
 			$Shortcut.TargetPath = "%SystemRoot%\system32\WindowsPowerShell\v1.0\powershell.exe"
 			$Shortcut.Arguments = ("-File D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1")
 			$Shortcut.IconLocation = "D:\Temp\mstsc.ico"
@@ -4366,9 +4367,9 @@ Function CreateShadowRDPShortcuts
 	#Enablovani Shadow RDP
 	reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services" /v Shadow /d 2 /t REG_DWORD /f 
 	
-	$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
-	$LektorMacAddress = (Get-childitem D:\Temp\Computers\*LEKTOR*my -recurse | %{[xml]($XMLMacaddress = Get-Content $_.FullName)}).ComputerDetailsData.Macaddress
-	if($MacAddress -eq $LektorMacAddress)
+	$MacAddress = (Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+    $ComputerFileName = GetComputerNameFromServerByMacXML -Mac $MacAddress -MachineGroupPath "D:\Temp\Computers"    
+	if($ComputerFileName -like "*LEKTOR*")	
 	{
 		CreateShadowRDPFromXML "STUDENT*my"
 	}
@@ -4377,3 +4378,4 @@ Function CreateShadowRDPShortcuts
 		CreateShadowRDPFromXML "LEKTOR*my"
 	}
 }
+
