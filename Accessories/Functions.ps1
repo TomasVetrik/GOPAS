@@ -3905,7 +3905,7 @@ Function CreateNetworkShortcuts
 	$WshShell = New-Object -comObject WScript.Shell
 	$Shortcut = $WshShell.CreateShortcut("$SharesFolder\LEKTOR$($Classroom).lnk")
 	$Shortcut.TargetPath = "\\LEKTOR$($Classroom)"
-	$Shortcut.SaveSave()
+	$Shortcut.Save()
 	
 	$Student = 1
 	$Count = 1
