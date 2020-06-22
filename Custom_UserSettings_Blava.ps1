@@ -3,10 +3,6 @@ $Temp="D:\Temp"
 
 . D:\Functions.ps1
 
-SaveComputersInfos
-
-CreateShadowRDPShortcuts
-
 switch -wildcard ($env:USERNAME) 
 { 
     "StudentEN" {$Arguments = 'intl.cpl,,/f:"D:\temp\Config_EN.xml"'}
@@ -36,3 +32,7 @@ switch($VideoController.CurrentHorizontalResolution)
 }
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value $GopasBackgroundPath
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value "2"
+
+SaveComputersInfos
+
+CreateShadowRDPShortcuts

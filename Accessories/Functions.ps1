@@ -3948,6 +3948,7 @@ Function CreateNetworkShortcuts_New
     if(!(Test-Path $SharesFolder))
     {
 	    New-Item $SharesFolder -itemtype directory	    
+		Start-Sleep -s 5
     }
     $GDSClassRoomPath = "D:\Temp\Computers"
     $WshShell = New-Object -comObject WScript.Shell
