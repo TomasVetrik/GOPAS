@@ -22,8 +22,8 @@ if ($users -match $profile)
 {
 	Write-Host "User $profile detected..." -ForegroundColor Green
 	Write-Host "GOPAS Profile detected..." -ForegroundColor Green
-	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\UserSettings.ps1" -Verb RunAs -WindowStyle Hidden
-	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\Map_disc.ps1"	
+	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-file $Temp\UserSettings.ps1" -Verb RunAs -WindowStyle Hidden
+	Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-file $Temp\Map_disc.ps1"	-Verb RunAs -WindowStyle Hidden
 	Save-Current-Logon-User
 }
 else
@@ -34,5 +34,5 @@ else
 
 if(!(Test-Path "D:\Temp\SetDisplayDuplicate.txt") -and ($env:computername -like "*LEKTOR*"))
 {	
-    Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList " -file $Temp\SetDisplayDuplicate.ps1" -Verb RunAs -WindowStyle Hidden	
+    Start-Process "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-file $Temp\SetDisplayDuplicate.ps1" -Verb RunAs -WindowStyle Hidden	
 }
