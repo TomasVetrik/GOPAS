@@ -261,7 +261,7 @@ else
 	#Restart procesu Explorer.exe z duvodu aplikovani zmen v registrech
 	write-host "All settings applied..." -foregroundcolor green
 	write-host "Restarting process Explorer.exe for aplying changes ..." -foregroundcolor green
-	Stop-Process -processname Explorer
+	Stop-Process -processname Explorer -Force
 	RUNDLL32.EXE user32.dll,UpdatePerUserSystemParameters, 1, true
 	write-host "Detecting process Explorer.exe..." -foregroundcolor green
 	$Explorer=(Get-Process | where {$_.name -eq "explorer"}).Name

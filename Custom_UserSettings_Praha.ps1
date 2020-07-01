@@ -3,7 +3,10 @@ $Temp="D:\Temp"
 
 . D:\Functions.ps1
 
-SaveComputersInfos
+if(!(Test-Path -Path D:\Temp\Computers))
+{
+	SaveComputersInfos
+}
 
 CreateShadowRDPShortcuts
 
@@ -25,11 +28,8 @@ switch($VideoController.CurrentHorizontalResolution)
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_1920x1080.bmp"
 	}
 }
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value $GopasBackgroundPath
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value "2"
 
-#Nastaveni screensaveru - musi byt zde kvuli Multiprofile instalaci (pod uctem StudentEN jinak Screensaver nefunguje)
-write-host "Setting screensaver..." -foregroundcolor green
+Set-WallPaper $GopasBackgroundPath
 
 #Z nejakeho duvodu mame v imagich nastaveny jako sifrovaci protokol SSL 3.0 a TLS 1.0. Nejake weby ale vyzaduji TLS 1.2. 
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12

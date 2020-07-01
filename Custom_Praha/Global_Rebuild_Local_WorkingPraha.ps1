@@ -347,7 +347,7 @@ else
 		$MainForm.Controls.Add($CMD_button)
 
 		$Restart_button = New-Object Windows.Forms.Button
-		$Restart_button.Location = New-Object System.Drawing.Size(150,260)
+		$Restart_button.Location = New-Object System.Drawing.Size(150,($position + 45))
 		$Restart_button.Size = New-Object System.Drawing.Size(200,20)
 		$Restart_button.Text = "Restart"
 		$Restart_button.Add_Click({wpeutil reboot})
