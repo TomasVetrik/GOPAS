@@ -3928,18 +3928,21 @@ Function CreateNetworkShortcuts
 
 Function SaveComputersInfos
 {	
-    $MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
-    $ComputerFileName =  GetComputerNameFromServerByMacXML -Mac $MacAddress	
-    New-Item "D:\Temp\Computers" -itemtype directory 
-	Start-Sleep -s 5
-	if(Test-Path $ComputerFileName)
-    {        
-        $GDSClassRoomPath = Split-Path -Path $ComputerFileName
-        if(Test-Path $GDSClassRoomPath)
-		{            
-			Copy-Directory -pathFrom $GDSClassRoomPath -pathTo "D:\Temp\Computers"
-        }                	    
-    }
+	if(!(Test-Path "D:\Temp\Computers"))
+	{
+		$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+		$ComputerFileName =  GetComputerNameFromServerByMacXML -Mac $MacAddress	
+		New-Item "D:\Temp\Computers" -itemtype directory 
+		Start-Sleep -s 5
+		if(Test-Path $ComputerFileName)
+		{        
+			$GDSClassRoomPath = Split-Path -Path $ComputerFileName
+			if(Test-Path $GDSClassRoomPath)
+			{            
+				Copy-Directory -pathFrom $GDSClassRoomPath -pathTo "D:\Temp\Computers"
+			}                	    
+		}
+	}
 }
 
 Function CreateNetworkShortcuts_New

@@ -25,7 +25,7 @@ switch($VideoController.CurrentHorizontalResolution)
 	{
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_2560x1080.png"
 	}
-	"1920"
+	default
 	{
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_1920x1080.bmp"	
 	}
