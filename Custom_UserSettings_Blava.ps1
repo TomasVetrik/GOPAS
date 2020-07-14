@@ -19,16 +19,13 @@ Set-ItemProperty -Path "HKCU:\Software\Policies\Microsoft\Internet Explorer\Main
 
 $VideoController = Get-WmiObject -class "Win32_VideoController"
 write-host "Setting $Temp\GOPAS_Background.bmp as desktop background..." -foregroundcolor green 
+$GopasBackgroundPath = "$Temp\GOPAS_Background_1920x1080.bmp"
 switch($VideoController.CurrentHorizontalResolution)
 {
 	"2560"
 	{
 		$GopasBackgroundPath = "$Temp\GOPAS_Background_2560x1080.png"
-	}
-	default
-	{
-		$GopasBackgroundPath = "$Temp\GOPAS_Background_1920x1080.bmp"	
-	}
+	}	
 }
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name Wallpaper -Value $GopasBackgroundPath
 Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name WallpaperStyle -Value "2"
@@ -36,3 +33,5 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies
 SaveComputersInfos
 
 CreateShadowRDPShortcuts
+
+Copy-Item "D:\Temp\Chocoi.exe" "C:\Users\Public\Desktop\Chocoi.exe" -force

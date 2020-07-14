@@ -3933,7 +3933,7 @@ Function SaveComputersInfos
 		$MacAddress=(Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
 		$ComputerFileName =  GetComputerNameFromServerByMacXML -Mac $MacAddress	
 		New-Item "D:\Temp\Computers" -itemtype directory 
-		Start-Sleep -s 5
+		Start-Sleep -s 10
 		if(Test-Path $ComputerFileName)
 		{        
 			$GDSClassRoomPath = Split-Path -Path $ComputerFileName
