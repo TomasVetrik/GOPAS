@@ -197,4 +197,5 @@ Disable-Service "AdobeARMservice"
 Get-ScheduledTask | where { $_.TaskName -like "Adobe*" } | Disable-ScheduledTask
 #SetDisplayDuplicateForLector
 DeleteBadBCDRecord
+RemoveFeature 'IIS-WebServerRole'
 Restart

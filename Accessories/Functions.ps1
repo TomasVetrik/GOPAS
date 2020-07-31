@@ -4384,3 +4384,29 @@ Function CreateShadowRDPShortcuts
 	}
 }
 
+Function RemoveFeature($FeatureName)
+{
+	if((Get-WmiObject win32_operatingsystem).ProductType -eq 1)
+	{
+		if((Get-WindowsOptionalFeature -Online -FeatureName $FeatureName).State -eq "Enabled")
+		{
+			Disable-WindowsOptionalFeature -Online -FeatureName $FeatureName
+		}
+		else
+		{
+			Write-Host ($FeatureName + " is already disabled or is not present.") -ForegroundColor Red
+		}
+	}
+	else
+	{
+		if((Get-WindowsFeature -Name $FeatureName).InstallState -eq "Installed")
+		{
+			Remove-WindowsFeature -Name $FeatureName -IncludeManagementTools
+		}
+		else
+		{
+			Write-Host ($FeatureName + " is already disabled or is not present.")
+		}
+	}
+}
+
