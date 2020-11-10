@@ -4390,7 +4390,7 @@ Function RemoveFeature($FeatureName)
 	{
 		if((Get-WindowsOptionalFeature -Online -FeatureName $FeatureName).State -eq "Enabled")
 		{
-			Disable-WindowsOptionalFeature -Online -FeatureName $FeatureName
+			Disable-WindowsOptionalFeature -Online -FeatureName $FeatureName -NoRestart
 		}
 		else
 		{
@@ -4401,7 +4401,7 @@ Function RemoveFeature($FeatureName)
 	{
 		if((Get-WindowsFeature -Name $FeatureName).InstallState -eq "Installed")
 		{
-			Remove-WindowsFeature -Name $FeatureName -IncludeManagementTools
+			Remove-WindowsFeature -Name $FeatureName -IncludeManagementTools -NoRestart
 		}
 		else
 		{
