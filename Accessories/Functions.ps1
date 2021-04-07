@@ -4410,3 +4410,88 @@ Function RemoveFeature($FeatureName)
 	}
 }
 
+Function InstallVNC()
+{	
+	$Bit_version = Get-WindowsArchitecture
+	if ($Bit_version -like "*64*") 
+	{
+		$VNCPath="D:\Temp\VNC\VNC-Viewer.exe"
+	}
+	else 
+	{
+		$VNCPath="D:\Temp\VNC\VNC-Viewer-32bit.exe"
+	}
+	New-Item C:\Users\Public\Desktop\VNC_Shortcuts -itemtype Directory -Force
+	CreateVNCProfiles	
+
+	if ($Bit_version -like "*64*") 
+	{
+		$VNCPath="D:\Temp\VNC\tightvnc-64bit.msi"
+	}
+	else 
+	{
+		$VNCPath="D:\Temp\VNC\tightvnc-32bit.msi"
+	}
+	Run "C:\Windows\System32\msiexec.exe" "/i $VNCPath /quiet /norestart ADDLOCAL=Server SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=0 SET_PASSWORD=0"
+}
+
+function CreateVNCProfile($Path, $ComputerIP, $ComputerName, $Student=$true)
+{
+	New-Item $Path -type directory				
+	$PathVNCFile = $Path+"\"+$ComputerName+".vnc"
+    $TextToWrite = "FriendlyName=$ComputerName
+Host=$ComputerIP
+RelativePtr=0"
+    If($Student -eq $true)
+    {
+	    $TextToWrite = "ClientCutText=0
+EnableChat=0
+FriendlyName=$ComputerName
+Host=$ComputerIP
+RelativePtr=0
+SendKeyEvents=0
+SendPointerEvents=0
+ServerCutText=0
+ShareFiles=0"
+}
+	New-Item $PathVNCFile -type file -force -value $TextToWrite	
+}
+
+Function CreateVNCProfilesFromXML($TargetXML)
+{    	
+	Get-childitem D:\Temp\Computers\$TargetXML | %{
+		[xml]$XMLFile = Get-Content $_.FullName
+		$Name = $XMLFile.ComputerDetailsData.Name
+		$IPAddress = $XMLFile.ComputerDetailsData.IPAddress
+		if($TargetXML -like "STUDENT*my")
+		{
+			CreateProfile -Path "D:\Temp\VNC_PROFILES" -ComputerIP $IPAddress -ComputerName $Name $false
+		}
+		else
+		{
+		    CreateProfile -Path "D:\Temp\VNC_PROFILES" -ComputerIP $IPAddress -ComputerName $Name 
+		}		
+		$WshShell = New-Object -comObject WScript.Shell
+		$Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\VNC_Shortcuts\$Name" + "_VNCProfile.lnk")
+		$Shortcut.TargetPath = "D:\Temp\VNC\VNC-Viewer-32bit.exe"
+		$Shortcut.Arguments = ("D:\Temp\VNC_PROFILES\$Name.vnc")
+		$Shortcut.IconLocation = "D:\Temp\VNC\VNC-Viewer-32bit.exe"
+		$Shortcut.Save()
+	}
+}
+
+function CreateVNCProfiles()
+{
+	$MacAddress = (Get-WmiObject win32_NetworkAdapterConfiguration | where {($_.dnsdomain -like "*skola*") -or ($_.dnsdomain -like "*gopas*")}).MACAddress
+	$ComputerFileName = GetComputerNameFromServerByMacXML -Mac $MacAddress -MachineGroupPath "D:\Temp\Computers"    
+	if($ComputerFileName -like "*LEKTOR*" -or $ComputerFileName -like "*STUDENTSK5-*")	
+	{
+		
+		CreateVNCProfilesFromXML "STUDENT*my"
+	}
+	else
+	{
+		CreateVNCProfilesFromXML "LEKTOR*my"
+	}
+}
+
