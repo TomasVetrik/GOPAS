@@ -9,3 +9,5 @@ if(((get-wmiobject win32_operatingsystem).Version | % {$_.Substring(0,2)}) -eq "
 	CHOCO-INSTALL "vscode"
 	CHOCO-INSTALL "git"
 }
+
+CHOCO-INSTALL "microsoft-teams"

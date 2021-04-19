@@ -4340,22 +4340,21 @@ Function DisableCloseButton()
     Add-Type $CloseButton
     [CloseButtonToggle.Status]::Disable()
 }
-
 Function CreateShadowRDPFromXML ($TargetXML)
 {
 	New-Item C:\Users\Public\Desktop\ShadowRDPShortcuts -itemtype Directory -Force
 	New-Item D:\Temp\ShadowRDP -itemtype Directory -Force
-		Get-childitem D:\Temp\Computers\$TargetXML | %{
+		Get-childitem D:\Temp\Computers\$TargetXML | % {
 			[xml]$XMLFile = Get-Content $_.FullName
 			$Name = $XMLFile.ComputerDetailsData.Name
 			$IPAddress = $XMLFile.ComputerDetailsData.IPAddress
 			if($TargetXML -like "STUDENT*my")
 			{
-				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /control /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
+				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`r`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /control /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
 			}
 			else
 			{
-				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
+				'$SI' + " = Invoke-Command $IPAddress -ScriptBlock {(Get-Process Explorer).SI}`r`nmstsc /shadow:" + '$SI[0]' + " /v:$IPAddress /noConsentPrompt" | out-file ("D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1") -encoding ASCII -force
 			}
 			
 			$WshShell = New-Object -comObject WScript.Shell
@@ -4364,6 +4363,14 @@ Function CreateShadowRDPFromXML ($TargetXML)
 			$Shortcut.Arguments = ("-File D:\Temp\ShadowRDP\$Name" + "_ShadowRDP.ps1")
 			$Shortcut.IconLocation = "D:\Temp\mstsc.ico"
 			$Shortcut.Save()
+			
+			if(Test-Path "D:\Temp\ShadowRDP\ShadowRDP.exe")
+			{
+				$WshShell = New-Object -comObject WScript.Shell
+				$Shortcut = $WshShell.CreateShortcut("C:\Users\Public\Desktop\ShadowRDPShortcuts\ShadowRDP.lnk")
+				$Shortcut.TargetPath = "D:\Temp\ShadowRDP\ShadowRDP.exe"
+				$Shortcut.Save()
+			}
 		}
 }
 
